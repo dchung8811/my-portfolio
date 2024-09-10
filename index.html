@@ -7,37 +7,73 @@
   <link href="output.css" rel="stylesheet">
   <style>
     .hero-bg {
-      background-image: url('https://source.unsplash.com/random/1600x900');
+      background-image: url('https://github.com/dchung8811/my-portfolio/blob/main/Philly%20Skyline.jpg?raw=true'); /* Updated URL */
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
+    }
+    .hero-overlay {
+      background-color: rgba(17, 24, 39, 0.6); /* Dark blue overlay */
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .typing {
+      font-family: 'Montserrat', sans-serif;
+      display: inline-block;
+      border-right: 2px solid white; /* Cursor */
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 1s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: white; }
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <!-- Header with hamburger menu -->
-  <header class="bg-blue-900 text-white shadow-md">
-    <nav class="container mx-auto flex items-center justify-between p-4">
-      <div class="text-2xl font-bold">My Portfolio</div>
-      <button id="menu-btn" class="block lg:hidden px-3 py-2 border rounded text-white border-white hover:text-gray-300 hover:border-gray-300">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-      <div id="menu" class="lg:flex lg:items-center lg:space-x-6 hidden">
-        <a href="#home" class="block py-2 px-4 rounded hover:bg-blue-700">Home</a>
-        <a href="#about" class="block py-2 px-4 rounded hover:bg-blue-700">About</a>
-        <a href="#projects" class="block py-2 px-4 rounded hover:bg-blue-700">Projects</a>
-        <a href="#contact" class="block py-2 px-4 rounded hover:bg-blue-700">Contact</a>
+<body>
+  <!-- Navbar -->
+  <nav class="bg-gray-800 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <!-- Hamburger for mobile (left-side) -->
+      <div class="block lg:hidden">
+        <button id="menu-toggle" class="text-white focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
       </div>
-    </nav>
-  </header>
+
+      <!-- Logo -->
+      <div class="text-white text-2xl font-bold">
+        My Logo
+      </div>
+
+      <!-- Menu for larger screens -->
+      <div class="hidden lg:flex space-x-8">
+        <a href="#selected-work" class="text-white">Selected Work</a>
+        <a href="#personal-work" class="text-white">Personal Work</a>
+        <a href="#about" class="text-white">About Me</a>
+        <a href="#bookshelf" class="text-white">Bookshelf</a>
+      </div>
+    </div>
+  </nav>
 
   <!-- Hero Section -->
-  <section class="hero-bg h-screen flex items-center justify-center text-center text-white">
-    <div class="p-8 bg-blue-800 bg-opacity-60 rounded-lg">
-      <h1 class="text-4xl font-bold mb-4">Welcome to My Portfolio</h1>
-      <p class="text-lg mb-8">I'm a web developer with a passion for creating stunning and user-friendly websites.</p>
-      <a href="#contact" class="bg-yellow-500 text-gray-900 px-6 py-3 rounded hover:bg-yellow-600 transition">Get in Touch</a>
+  <section id="home" class="hero-bg h-screen flex items-center justify-center text-center text-white relative">
+    <div class="hero-overlay flex items-center justify-center w-full h-full">
+      <div class="p-8 bg-blue-800 bg-opacity-20 rounded-lg">
+        <h1 class="text-4xl font-bold mb-4 typing">Hi, I'm Dennies, a Product Manager from Philadelphia.</h1>
+        <p class="text-lg mb-8">I'm a web developer with a passion for creating stunning and user-friendly websites.</p>
+        <a href="#contact" class="bg-yellow-500 text-gray-900 px-6 py-3 rounded hover:bg-yellow-600 transition">Get in Touch</a>
+      </div>
     </div>
   </section>
 
@@ -55,10 +91,10 @@
     </div>
   </section>
 
-  <!-- Projects Section -->
-  <section id="projects" class="py-16">
+  <!-- Selected Work Section -->
+  <section id="selected-work" class="py-16">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-8">Projects</h2>
+      <h2 class="text-3xl font-bold text-center mb-8">Selected Work</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div class="bg-white p-6 rounded-lg shadow-lg">
           <img src="https://via.placeholder.com/400x250" alt="Project 1" class="w-full h-48 object-cover rounded-t-lg mb-4">
@@ -76,6 +112,22 @@
           <p class="text-gray-700">A brief description of the project goes here. Highlight the key features and technologies used.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Personal Work Section -->
+  <section id="personal-work" class="py-16 bg-gray-200">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Personal Work</h2>
+      <p class="text-lg text-center">Details about personal projects or work experience can go here.</p>
+    </div>
+  </section>
+
+  <!-- Bookshelf Section -->
+  <section id="bookshelf" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Bookshelf</h2>
+      <p class="text-lg text-center">Information about books, readings, or recommendations can go here.</p>
     </div>
   </section>
 
@@ -108,7 +160,7 @@
 
   <script>
     // JavaScript to toggle the menu
-    document.getElementById('menu-btn').addEventListener('click', function() {
+    document.getElementById('menu-toggle').addEventListener('click', function() {
       var menu = document.getElementById('menu');
       menu.classList.toggle('hidden');
     });
