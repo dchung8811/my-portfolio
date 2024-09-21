@@ -35,7 +35,7 @@
         button:hover {
             background-color: #45a049;
         }
-        .guidelines, .food-list {
+        .guidelines {
             margin-top: 20px;
             background-color: #e7f3fe;
             border-left: 6px solid #2196F3;
@@ -62,6 +62,20 @@
         }
         .delete-button:hover {
             background-color: #e53935;
+        }
+        .resources {
+            margin-top: 20px;
+            background-color: #e7ffe6;
+            border-left: 6px solid #34a853;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .resources a {
+            color: #34a853;
+            text-decoration: none;
+        }
+        .resources a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -105,6 +119,15 @@
             <li><strong>Food Database:</strong> Ensure your food is listed in the Food Database tab with the brand name and its caloric contents (kcal/kg) found on the back of the food package.</li>
             <li><strong>Portion Control:</strong> Decide how much of your dog's meal should be kibble versus supplements. Total portion percentages should equal 100%.</li>
             <li><strong>Multiple Foods:</strong> You can list up to 8 different types of food in the calculator for flexibility.</li>
+        </ul>
+    </div>
+
+    <div class="resources">
+        <h3>Resources & Additional Information:</h3>
+        <p>This calculator was built to help automate the process of calculating dog food portions instead of doing it manually with pen and paper. For more information on how much to feed your dog, you can refer to the following resources:</p>
+        <ul>
+            <li><a href="https://www.embracepetinsurance.com/waterbowl/article/how-much-feed-your-dog" target="_blank">How Much to Feed Your Dog - Embrace Pet Insurance</a></li>
+            <li><a href="https://www.petmd.com/blogs/nutritionnuggets/jcoates/2013/aug/how-many-calories-does-dog-need-30849" target="_blank">How Many Calories Does a Dog Need? - PetMD</a></li>
         </ul>
     </div>
 
@@ -159,75 +182,69 @@
                 foodInput.remove();
                 foodCount--;
                 document.getElementById('foodLimitMessage').style.display = 'none';
-                updateFoodInputs();
+                if (foodCount < 8) {
+                    document.getElementById('foodLimitMessage').style.display = 'none';
+                }
             });
         });
 
-        function toggleManualInput(select) {
-            const manualInput = select.nextElementSibling;
-            if (select.value === "manual") {
+        function toggleManualInput(selectElement) {
+            const manualInput = selectElement.parentElement.querySelector('.manual-input');
+            if (selectElement.value === 'manual') {
                 manualInput.style.display = 'block';
             } else {
                 manualInput.style.display = 'none';
             }
         }
 
-        function updateFoodInputs() {
-            const foodInputs = document.querySelectorAll('.food-input');
-            foodCount = foodInputs.length;
-            foodInputs.forEach((input, index) => {
-                input.querySelector('label').innerText = `Select Food ${index + 1}:`;
-            });
-        }
-
         document.getElementById('calculate').addEventListener('click', function() {
+            const goal = parseFloat(document.getElementById('goal').value);
+            const weightInLbs = parseFloat(document.getElementById('weight').value);
+            const mealsPerDay = parseInt(document.getElementById('meals').value);
+
+            if (!weightInLbs || isNaN(weightInLbs) || weightInLbs <= 0) {
+                alert("Please enter a valid weight in lbs.");
+                return;
+            }
+
+            // Convert weight from lbs to kg
+            const weightInKg = weightInLbs / 2.20462;
+
+            // Calculate RER (Resting Energy Requirement)
+            const rer = 70 * Math.pow(weightInKg, 0.75);
+
+            // Calculate Total Daily Caloric Needs
+            const totalCalories = rer * goal;
+
+            // Collect selected foods and their portions
             const foodInputs = document.querySelectorAll('.food-input');
-            let totalKcalPerMeal = 0;
             let totalPortion = 0;
+            let resultHTML = `<h2>Total Daily Caloric Needs: ${totalCalories.toFixed(2)} kcal</h2><h3>Food Breakdown:</h3><ul>`;
+            
+            foodInputs.forEach((foodInput, index) => {
+                const selectedKcal = foodInput.querySelector('.food-select').value;
+                const manualKcal = foodInput.querySelector('.manual-input').value;
+                const portion = parseFloat(foodInput.querySelector('.portion-input').value);
 
-            const portions = [];
+                const kcalPerKg = selectedKcal === 'manual' ? parseFloat(manualKcal) : parseFloat(selectedKcal);
 
-            foodInputs.forEach(input => {
-                const kcalPerKg = parseFloat(input.querySelector('.food-select').value) ||
-                    parseFloat(input.querySelector('.manual-input').value);
-                const portion = parseFloat(input.querySelector('.portion-input').value);
+                if (!isNaN(kcalPerKg) && portion > 0) {
+                    const portionCalories = totalCalories * (portion / 100);
+                    const gramsPerDay = (portionCalories / kcalPerKg) * 1000; // kcal/kg to g conversion
+                    const gramsPerMeal = gramsPerDay / mealsPerDay;
 
-                if (kcalPerKg && portion > 0) {
-                    totalKcalPerMeal += kcalPerKg * (portion / 100);
+                    resultHTML += `<li>Food ${index + 1}: ${gramsPerMeal.toFixed(2)} g/meal (${gramsPerDay.toFixed(2)} g/day)</li>`;
                     totalPortion += portion;
-                    portions.push({ kcalPerKg, portion });
                 }
             });
 
-            if (totalPortion !== 100) {
-                document.getElementById('result').innerText = "Total portion must equal 100%.";
+            if (totalPortion > 100) {
+                alert("Total portion cannot exceed 100%. Please adjust your portions.");
                 return;
             }
 
-            const multiplier = parseFloat(document.getElementById('goal').value);
-            const meals = parseInt(document.getElementById('meals').value);
-            const weight = parseFloat(document.getElementById('weight').value);
-
-            if (!weight || meals < 1) {
-                document.getElementById('result').innerText = "Please enter valid values.";
-                return;
-            }
-
-            const kgWeight = weight * 0.453592; // Convert lbs to kg
-            const kcalPerGram = totalKcalPerMeal / 1000; // Convert KCal per Kg to KCal per gram
-            const restingEnergyRequirement = 70 * Math.pow(kgWeight, 0.75);
-            const dailyKcal = restingEnergyRequirement * multiplier;
-            const kcalPerMeal = dailyKcal / meals;
-
-            const gramsPerMeal = kcalPerMeal / kcalPerGram; // Convert KCal per meal to grams
-
-            let output = `Total Grams per Meal: ${Math.round(gramsPerMeal)} grams\n`;
-            portions.forEach((food, index) => {
-                const gramsForFood = (food.portion / 100) * gramsPerMeal;
-                output += `Food ${index + 1} (${food.kcalPerKg} kcal/kg): ${Math.round(gramsForFood)} grams\n`;
-            });
-
-            document.getElementById('result').innerText = output;
+            resultHTML += `</ul><p><strong>Number of Meals per Day:</strong> ${mealsPerDay}</p>`;
+            document.getElementById('result').innerHTML = resultHTML;
         });
     </script>
 </body>
