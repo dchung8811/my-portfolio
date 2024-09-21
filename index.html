@@ -7,13 +7,13 @@
   <link href="output.css" rel="stylesheet">
   <style>
     .hero-bg {
-      background-image: url('https://ucarecdn.com/bece49fc-4f21-4b9a-833a-019c4d3d63b6/PhillySkyline.jpg'); /* Updated URL */
+      background-image: url('https://ucarecdn.com/bece49fc-4f21-4b9a-833a-019c4d3d63b6/PhillySkyline.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
     .hero-overlay {
-      background-color: rgba(17, 24, 39, 0.6); /* Dark blue overlay */
+      background-color: rgba(17, 24, 39, 0.6);
       position: absolute;
       top: 0;
       left: 0;
@@ -21,39 +21,39 @@
       height: 100%;
     }
     .typing {
-      font-family: 'Montserrat', sans-serif;
-      display: inline-block;
-      border-right: 2px solid white; /* Cursor */
-      white-space: nowrap;
-      overflow: hidden;
-      animation: typing 1s steps(40, end), blink-caret 0.75s step-end infinite;
-    }
+  font-family: 'Montserrat', sans-serif;
+  display: inline-block;
+  border-right: 2px solid white; /* Cursor */
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 0.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
     @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
+  from { width: 0; }
+  to { width: 11ch; } /* Adjusted for "Hi, I'm Dennies." */
+}
+
     }
     @keyframes blink-caret {
       from, to { border-color: transparent; }
       50% { border-color: white; }
     }
+    .scroll-smooth {
+      scroll-behavior: smooth;
+    }
+    /* For mobile menu */
+    .mobile-menu {
+      display: none;
+    }
   </style>
 </head>
-<body>
+<body class="scroll-smooth">
   <!-- Navbar -->
   <nav class="bg-gray-800 p-4">
     <div class="container mx-auto flex justify-between items-center">
-      <!-- Hamburger for mobile (left-side) -->
-      <div class="block lg:hidden">
-        <button id="menu-toggle" class="text-white focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-          </svg>
-        </button>
-      </div>
-
       <!-- Logo -->
       <div class="text-white text-2xl font-bold">
-        My Logo
       </div>
 
       <!-- Menu for larger screens -->
@@ -63,39 +63,101 @@
         <a href="#about" class="text-white">About Me</a>
         <a href="#bookshelf" class="text-white">Bookshelf</a>
       </div>
+
+      <!-- Hamburger for mobile -->
+      <div class="block lg:hidden">
+        <button id="menu-toggle" class="text-white focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden bg-gray-800 p-4 space-y-4 text-center text-white">
+      <a href="#selected-work" class="block">Selected Work</a>
+      <a href="#personal-work" class="block">Personal Work</a>
+      <a href="#about" class="block">About Me</a>
+      <a href="#bookshelf" class="block">Bookshelf</a>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section id="home" class="hero-bg h-screen flex items-center justify-center text-center text-white relative">
-    <div class="hero-overlay flex items-center justify-center w-full h-full">
-      <div class="p-8 bg-blue-800 bg-opacity-20 rounded-lg">
-        <h1 class="text-4xl font-bold mb-4 typing">Hi, I'm Dennies, a Product Manager from Philadelphia.</h1>
-        <p class="text-lg mb-8">I'm a product manager with a passion for technology, a love for books, and the lifelong ambition to continuously learn.</p>
-        <a href="#contact" class="bg-yellow-500 text-gray-900 px-6 py-3 rounded hover:bg-yellow-600 transition">Get in Touch</a>
-      </div>
+<!-- Hero Section -->
+<section id="home" class="hero-bg h-screen flex items-center justify-center text-center text-white relative">
+  <div class="hero-overlay flex items-center justify-center w-full h-full">
+    <div class="p-6 sm:p-8 md:p-12 bg-blue-800 bg-opacity-20 rounded-lg max-w-md sm:max-w-lg md:max-w-2xl overflow-hidden">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 typing whitespace-normal">
+        Hi, I'm Dennies.
+      </h1>
+      <p class="text-sm sm:text-base md:text-lg mb-8 whitespace-normal">
+        I'm a product manager from Philadelphia with a passion for technology, a love for books, and the lifelong ambition to continuously learn.
+      </p>
+      <a href="#contact" class="bg-yellow-500 text-gray-900 px-4 py-2 sm:px-6 sm:py-3 rounded hover:bg-yellow-600 transition">
+        Get in Touch
+      </a>
     </div>
-  </section>
+  </div>
+</section>
+
+
+<!-- JavaScript to toggle the mobile menu -->
+<script>
+  document.getElementById('menu-toggle').addEventListener('click', function() {
+    var menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden'); // Toggle the menu visibility
+  });
+</script>
+</body>
+</html>
+
 
   <!-- About Section -->
   <section id="about" class="py-16 bg-gray-200">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8">About Me</h2>
       <div class="flex flex-col lg:flex-row items-center lg:justify-between">
-        <img src="https://via.placeholder.com/300" alt="Profile Picture" class="w-64 h-64 object-cover rounded-full shadow-lg mb-8 lg:mb-0">
+        <img src="https://ucarecdn.com/9b8986e8-34b0-4dcb-9198-831e47d8f7ec/PortfolioProfilePinkBackground.png" alt="Profile Picture" class="w-64 h-64 object-cover rounded-full shadow-lg mb-8 lg:mb-0">
         <div class="lg:w-2/3">
-          <p class="text-lg mb-4">I am a passionate web developer with experience in creating responsive and interactive websites. My goal is to build websites that are both functional and visually appealing.</p>
-          <p class="text-lg">I specialize in HTML, CSS, JavaScript, and various front-end frameworks. Let's work together to bring your vision to life!</p>
+          <p class="text-lg mb-4">Born and raised in Philly, I graduated from Saint Joseph's University with a BS in Accounting and Management Information Systems. 
+
+            I'm a product manager with a passion for technology, a love for books, and the lifelong ambition to continuously learn. I started my career in consulting around enterprise systems and security, and formally shifted to product by reading, watching, and doing. I created an app, founded a small internet business, and have always been determined to optimize processes and the approach to things. I have a strong focus to detail, usability, and the value a project or product brings.</p>
+          <p class="text-lg mb-4">I love building - and more importantly - I love falling in love with problems, solving problems, and creating efficient, effective, and feasible outcomes that create value for the customer whomever that might be. I’m a driven and a resourceful individual who maintains a positive and proactive attitude, and is willing to go the extra mile to get the work done.      </p>
+          <p class="text-lg mb-4">In my off time, I'm an avid tennis player, pickleballer, and reader. I love hanging out with the pups, Loki and Oliver      </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Selected Work Section -->
-  <section id="selected-work" class="py-16">
+<!-- Selected Work Section -->
+<section id="selected-work" class="py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-8">Selected Work</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <img src="https://via.placeholder.com/400x250" alt="Project 1" class="w-full h-48 object-cover rounded-t-lg mb-4">
+        <h3 class="text-xl font-semibold mb-2">Project 1</h3>
+        <p class="text-gray-700">A brief description of the project goes here. Highlight the key features and technologies used.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <img src="https://via.placeholder.com/400x250" alt="Project 2" class="w-full h-48 object-cover rounded-t-lg mb-4">
+        <h3 class="text-xl font-semibold mb-2">Project 2</h3>
+        <p class="text-gray-700">A brief description of the project goes here. Highlight the key features and technologies used.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg col-span-1 md:col-span-2 lg:col-span-1 mx-auto">
+        <img src="https://via.placeholder.com/400x250" alt="Project 3" class="w-full h-48 object-cover rounded-t-lg mb-4">
+        <h3 class="text-xl font-semibold mb-2">Project 3</h3>
+        <p class="text-gray-700">A brief description of the project goes here. Highlight the key features and technologies used.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Personal Work Section -->
+  <section id="selected-work" class="py-16 bg-gray-200">
     <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-8">Selected Work</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <h2 class="text-3xl font-bold text-center mb-8">Personal Work</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         <div class="bg-white p-6 rounded-lg shadow-lg">
           <img src="https://via.placeholder.com/400x250" alt="Project 1" class="w-full h-48 object-cover rounded-t-lg mb-4">
           <h3 class="text-xl font-semibold mb-2">Project 1</h3>
@@ -111,15 +173,12 @@
           <h3 class="text-xl font-semibold mb-2">Project 3</h3>
           <p class="text-gray-700">A brief description of the project goes here. Highlight the key features and technologies used.</p>
         </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <img src="https://via.placeholder.com/400x250" alt="Project 4" class="w-full h-48 object-cover rounded-t-lg mb-4">
+          <h3 class="text-xl font-semibold mb-2">Project 4</h3>
+          <p class="text-gray-700">A brief description of the project goes here. Highlight the key features and technologies used.</p>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Personal Work Section -->
-  <section id="personal-work" class="py-16 bg-gray-200">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-8">Personal Work</h2>
-      <p class="text-lg text-center">Details about personal projects or work experience can go here.</p>
     </div>
   </section>
 
@@ -131,39 +190,35 @@
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="py-16 bg-gray-200">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-8">Contact Me</h2>
-      <form action="#" method="POST" class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <div class="mb-4">
-          <label for="name" class="block text-lg font-medium mb-2">Name</label>
-          <input type="text" id="name" name="name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        </div>
-        <div class="mb-4">
-          <label for="email" class="block text-lg font-medium mb-2">Email</label>
-          <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        </div>
-        <div class="mb-4">
-          <label for="message" class="block text-lg font-medium mb-2">Message</label>
-          <textarea id="message" name="message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-        </div>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">Send Message</button>
-      </form>
+<!-- Contact Section -->
+<section id="contact" class="py-16 bg-gray-200">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-8">Contact Me</h2>
+    <p class="text-lg text-center mb-4">Feel free to reach out through any of the following:</p>
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto text-center">
+      <div class="mb-4">
+        <a href="mailto:dennieshchung@gmail.com" class="flex items-center text-blue-600 hover:underline">
+          <img src="https://img.icons8.com/material-outlined/24/000000/gmail-new.png" alt="Email" class="w-6 h-6 mr-2"/>
+          Email: dennieshchung@gmail.com
+        </a>
+      </div>
+      <div class="mb-4">
+        <a href="https://www.linkedin.com/in/dennies-chung/" target="_blank" class="flex items-center text-blue-600 hover:underline">
+          <img src="https://img.icons8.com/material-outlined/24/000000/linkedin.png" alt="LinkedIn" class="w-6 h-6 mr-2"/>
+          LinkedIn Profile
+        </a>
+      </div>
+      <div class="mb-4">
+        <a href="https://medium.com/@dennieshchung" target="_blank" class="flex items-center text-blue-600 hover:underline">
+          Medium Profile
+        </a>
+      </div>
+      <div class="mb-4">
+        <a href="https://www.goodreads.com/user/show/90954963-dennies-chung" target="_blank" class="flex items-center text-blue-600 hover:underline">
+          Goodreads Profile
+        </a>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="bg-blue-900 text-white py-4 text-center">
-    <p>&copy; 2024 My Portfolio. All rights reserved.</p>
-  </footer>
-
-  <script>
-    // JavaScript to toggle the menu
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-      var menu = document.getElementById('menu');
-      menu.classList.toggle('hidden');
-    });
-  </script>
-</body>
-</html>
