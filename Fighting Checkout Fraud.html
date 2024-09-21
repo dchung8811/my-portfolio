@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fighting Checkout Fraud</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f3;
+        }
+        header {
+            background-color: rgb(31, 41, 55);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin: 10px 0 20px;
+        }
+        section {
+            max-width: 80%;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: -30px; /* Overlap header */
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 20px 0;
+            border-top: 1px solid #eaeaea;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .stat {
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .stat h3 {
+            font-size: 2rem;
+            color: #4CAF50;
+        }
+        .process {
+            margin: 20px 0;
+        }
+        .process ol {
+            padding-left: 20px;
+        }
+        blockquote {
+            border-left: 4px solid #4CAF50;
+            padding-left: 15px;
+            font-style: italic;
+            color: #555;
+            margin: 20px 0;
+        }
+        .cta {
+            display: block;
+            text-align: center;
+            margin: 30px 0;
+            padding: 15px;
+            background-color: rgb(234, 179, 8);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .cta:hover {
+            background-color: #45a049;
+        }
+        .image-container {
+            display: flex; /* Use flexbox to arrange images in a row */
+            justify-content: center; /* Center the images */
+            gap: 20px; /* Optional: Add space between images */
+        }
+
+        .image-container img {
+            max-width: 45%; /* Set maximum width for images */
+            height: auto; /* Maintain aspect ratio */
+        }
+        
+        .image-container2 {
+            display: flex; /* Use flexbox to arrange images in a row */
+            justify-content: center; /* Center the images */
+            gap: 20px; /* Optional: Add space between images */
+        }
+
+        .image-container2 img {
+            max-width: 100%; /* Set maximum width for images */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Fighting Checkout Fraud</h1>
+    <h2>Transforming Trust: Turning Checkout Chaos into Secure Savings</h2>
+</header>
+
+<section>
+    <h2>Project Overview</h2>
+    <p>The project aimed to develop and implement effective fraud mitigation strategies that resulted in a remarkable 99% reduction in fraudulent trials, while also mitigating $43 million in chargebacks and refunds, and saving $800,000 in direct and indirect costs. By conducting thorough data analysis to identify vulnerabilities in the checkout process, we collaborated with cross-functional teams—including data science and engineering—to devise a comprehensive prevention strategy. The successful implementation of targeted solutions not only enhanced detection capabilities but also significantly improved the overall security of the checkout experience, ultimately protecting revenue and boosting customer trust.</p>
+
+    <div class="stats">
+        <div class="stat">
+            <h3>99%</h3>
+            <p>Reduction in fraudulent trials</p>
+        </div>
+        <div class="stat">
+            <h3>$800K</h3>
+            <p>Saved in annual direct and indirect costs</p>
+        </div>
+        <div class="stat">
+            <h3>$43M</h3>
+            <p>Mitigated in refunds and chargebacks</p>
+        </div>
+    </div>
+
+    <h2>Situation</h2>
+    <p>I observed that 80% of all trials led to a chargeback, with fraud being the primary reason for dispute. This indicated the presence of card testing on our checkout pages. Our initial objective was to proactively avoid chargebacks to safeguard the positive experiences of genuine customers, thereby preserving our brand reputation. Additionally, we aimed to minimize the financial implications and fees associated with these chargebacks.</p>
+
+    <div class="image-container">
+        <img src="https://ucarecdn.com/7d9f57d8-00b2-46f3-b4d7-cb6e87e474ca/Fraudpic1.png" alt="Situation Image">
+        <img src="https://ucarecdn.com/7d4590e1-459c-43f9-99db-58611a48d047/Fraudpic2.png" alt="Situation Image">
+    </div>
+
+    <h2>My Role</h2>
+    <p>I was responsible for spearheading product development and working closely with stakeholders to generate strategies and solutions aimed at mitigating fraud related to checkout and card testing on our payments platform.</p>
+
+    <h2>Product</h2>
+    <p>Through data analysis, we identified some trends among fraudulent customers: non-usage of storage quota during trials, suspicious emails, and extremely quick checkouts, indicating bot activity. To address this, we developed a risk framework called "fraud rules" to flag high-risk customers meeting all three criteria. By flagging these users in our database and implementing preventive measures, such as drone jobs, we successfully prevented 80% of fraudulent trials from resulting in chargebacks, resolving our issues with brand reputation and cost-saving.</p>
+
+    <div class="image-container2">
+        <img src="https://ucarecdn.com/4b05a6a2-0f81-428f-82c7-b94b4f9e1314/fraudpic3.png" alt="Situation Image">
+    </div> 
+    
+    <p>However, the challenge of card testing persisted, as fraudsters continued to exploit our platform for testing purposes, leading to inaccurate growth metrics and hindering forecasting. To tackle this, we partnered with a vendor utilizing a global merchant network and ML models, and implemented a Captcha on the checkout page to detect card testers at the beginning of the customer journey. Sharing our data on card testers' patterns, behaviors, and session IDs with the vendor allowed them to improve their ML models. After persistent efforts and iterations, we successfully curtailed the problem at the initial stage of customer acquisition.</p>
+
+    <div class="image-container2">
+        <img src="https://ucarecdn.com/2a364c8d-97ce-440b-b4a8-5964f3942e16/FightingCheckoutFraud.png" alt="Situation Image">
+    </div> 
+
+    <h2>Results</h2>
+    <p>• Reduced fraudulent trials on our checkout pages by 99%</p>
+    <p>• Saved the company $800K in annual direct and indirect costs</p>
+    <p>• Mitigated about $43 million in refunds and chargebacks</p>
+
+    <a href="index.html" class="cta">Back home</a>
+</section>
+
+</body>
+</html>
