@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Food Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .guidelines {
+            margin-top: 20px;
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .disclosure {
+            margin-top: 20px;
+            background-color: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="disclosure">
+        DISCLOSURE: I'm not a vet. This model is not professional medical advice for your dogs. Please do your own research and use the model at your discretion. I'm just a dog dad of two that I really love, and want to make sure they're in the right weight zone for their size.
+    </div>
+
+    <h1>Dog Food Calculator</h1>
+
+    <label for="food">Select Food:</label>
+    <select id="food" onchange="updateKcalPerKg()">
+        <option value="3884">Purina Pro Plan Specialized Beef & Rice Formula High Protein Large Breed (3,884 kcal/kg)</option>
+        <option value="3605">Rachel Ray Nutrish Chicken and Veggies (3,605 kcal/kg)</option>
+        <option value="3896">Honest Kitchen (3,896 kcal/kg)</option>
+        <option value="4270">Honest Kitchen Dehydrated (4,270 kcal/kg)</option>
+        <option value="3750">Open Farm (3,750 kcal/kg)</option>
+        <option value="1741">Just Food for Dogs Turkey Recipe (1,741 kcal/kg)</option>
+        <option value="1532">Just Food for Dogs Chicken Recipe (1,532 kcal/kg)</option>
+        <option value="1275">Just Food for Dogs Beef Recipe (1,275 kcal/kg)</option>
+        <option value="8458">Salmon Oil (8,458 kcal/kg)</option>
+        <option value="1300">Primal Goat Milk Cranberry Blast (1,300 kcal/kg)</option>
+        <option value="3642">Duck Feet (3,642 kcal/kg)</option>
+        <option value="2700">Small Batch Chicken Hearts (2,700 kcal/kg)</option>
+        <option value="9000">Coconut Oil (9,000 kcal/kg)</option>
+        <option value="5300">Peanut Butter (5,300 kcal/kg)</option>
+        <option value="3680">Bone Broth (3,680 kcal/kg)</option>
+        <option value="manual">Manual Input (kcal/kg)</option>
+    </select>
+
+    <label for="manualKcal">Or enter KCal per Kg for Food:</label>
+    <input type="number" id="manualKcal" placeholder="Enter KCal per Kg" oninput="clearFoodSelection()">
+
+    <label for="goal">Goal for Dog's Weight:</label>
+    <select id="goal">
+        <option value="1">Weight Loss/Maintenance (1)</option>
+        <option value="1.7">Weight Gain (1.7)</option>
+        <option value="3">Growth (Less than 4 months old) (3)</option>
+        <option value="2">Growth (More than 4 months old) (2)</option>
+    </select>
+
+    <label for="meals">Meals per Day:</label>
+    <input type="number" id="meals" min="1" value="2">
+
+    <label for="weight">Desired Weight (lbs):</label>
+    <input type="number" id="weight" min="1" placeholder="Enter weight in lbs">
+
+    <button id="calculate">Calculate</button>
+
+    <h2 id="result" style="margin-top: 20px;"></h2>
+
+    <div class="guidelines">
+        <h3>Guidelines to Consider:</h3>
+        <ul>
+            <li><strong>Use common sense:</strong> This calculator does not take common sense into account. Balance your dog's diet with a well-rounded meal.</li>
+            <li><strong>Life Stages:</strong> Dogs go through different phases in their life and require different caloric amounts at these stages. Puppies, for example, need more food to grow.</li>
+            <li><strong>Use Drop-down Menus:</strong> This app is created with formulas! If your food is listed, use the drop-down menus to eliminate the possibility of errors.</li>
+            <li><strong>Caloric contents:</strong> If your dog's food is not listed as an option, enter in the caloric contents manually. Caloric contents (kcal/kg) can be found on the back of the food package.</li>
+            <li><strong>Measure by Weight:</strong> It’s best to feed your dog by the gram rather than by the cup. A food scale is recommended for accuracy.</li>
+            <li><strong>Portion Control:</strong> Decide how much of your dog's meal should be kibble versus supplements. Total portion percentages should equal 100%.</li>
+            <li><strong>Multiple Foods:</strong> You can list up to 8 different types of food in the calculator for flexibility.</li>
+        </ul>
+    </div>
+
+    <button id="multipleFoodsButton" onclick="location.href='Dog Food Calculator Multiple Foods.html';">Do you feed your dog multiple types of food?</button>
+
+    <script>
+        function updateKcalPerKg() {
+            document.getElementById('manualKcal').value = ''; // Clear manual input when selecting food
+        }
+
+        function clearFoodSelection() {
+            const foodSelect = document.getElementById('food');
+            foodSelect.selectedIndex = 0; // Reset food selection if manual input is used
+        }
+
+        document.getElementById('calculate').addEventListener('click', function() {
+            const kcalPerKg = document.getElementById('manualKcal').value ? 
+                parseFloat(document.getElementById('manualKcal').value) : 
+                parseFloat(document.getElementById('food').value);
+
+            const multiplier = parseFloat(document.getElementById('goal').value);
+            const meals = parseInt(document.getElementById('meals').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+
+            if (!weight || meals < 1) {
+                document.getElementById('result').innerText = "Please enter valid values.";
+                return;
+            }
+
+            const kgWeight = weight * 0.453592; // Convert lbs to kg
+            const kcalPerGram = kcalPerKg / 1000; // Convert KCal per Kg to KCal per gram
+            const restingEnergyRequirement = 70 * Math.pow(kgWeight, 0.75);
+            const dailyKcal = restingEnergyRequirement * multiplier;
+            const kcalPerMeal = dailyKcal / meals;
+
+            const gramsPerMeal = kcalPerMeal / kcalPerGram; // Convert KCal per meal to grams
+
+            document.getElementById('result').innerText = `Grams per meal: ${Math.round(gramsPerMeal)} grams to achieve Resting Energy Requirement.`;
+        });
+    </script>
+</body>
+</html>

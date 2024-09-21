@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Food Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .guidelines, .food-list {
+            margin-top: 20px;
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .disclosure {
+            margin-top: 20px;
+            background-color: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .food-input {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+        }
+        .delete-button {
+            background-color: #f44336;
+        }
+        .delete-button:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <div class="disclosure">
+        DISCLOSURE: I'm not a vet. This model is not professional medical advice for your dogs. Please do your own research and use the model at your discretion. I'm just a dog dad of two that I really love, and want to make sure they're in the right weight zone for their size.
+    </div>
+
+    <h1>Dog Food Calculator</h1>
+
+    <button id="addFoodButton">Add Food Type</button>
+
+    <div id="foodInputs"></div>
+    <div id="foodLimitMessage" style="color: red; display: none;">Only 8 food types are allowed.</div>
+
+    <label for="goal">Goal for Dog's Weight:</label>
+    <select id="goal">
+        <option value="1">Weight Loss/Maintenance (1)</option>
+        <option value="1.7">Weight Gain (1.7)</option>
+        <option value="3">Growth (Less than 4 months old) (3)</option>
+        <option value="2">Growth (More than 4 months old) (2)</option>
+    </select>
+
+    <label for="meals">Meals per Day:</label>
+    <input type="number" id="meals" min="1" value="2">
+
+    <label for="weight">Desired Weight (lbs):</label>
+    <input type="number" id="weight" min="1" placeholder="Enter weight in lbs">
+
+    <button id="calculate">Calculate</button>
+
+    <h2 id="result" style="margin-top: 20px;"></h2>
+
+    <div class="guidelines">
+        <h3>Guidelines to Consider:</h3>
+        <ul>
+            <li><strong>Use common sense:</strong> This calculator does not take common sense into account. Balance your dog's diet with a well-rounded meal.</li>
+            <li><strong>Life Stages:</strong> Dogs go through different phases in their life and require different caloric amounts at these stages. Puppies, for example, need more food to grow.</li>
+            <li><strong>Use Drop-down Menus:</strong> This spreadsheet is created with formulas! Use the drop-down menus to eliminate the possibility of errors.</li>
+            <li><strong>Measure by Weight:</strong> It’s best to feed your dog by the gram rather than by the cup. A food scale is recommended for accuracy.</li>
+            <li><strong>Food Database:</strong> Ensure your food is listed in the Food Database tab with the brand name and its caloric contents (kcal/kg) found on the back of the food package.</li>
+            <li><strong>Portion Control:</strong> Decide how much of your dog's meal should be kibble versus supplements. Total portion percentages should equal 100%.</li>
+            <li><strong>Multiple Foods:</strong> You can list up to 8 different types of food in the calculator for flexibility.</li>
+        </ul>
+    </div>
+
+    <script>
+        const foods = [
+            { name: "Purina Pro Plan Specialized Beef & Rice Formula High Protein Large Breed", kcal: 3884 },
+            { name: "Rachel Ray Nutrish Chicken and Veggies", kcal: 3605 },
+            { name: "Honest Kitchen", kcal: 3896 },
+            { name: "Honest Kitchen Dehydrated", kcal: 4270 },
+            { name: "Open Farm", kcal: 3750 },
+            { name: "Just Food for Dogs Turkey Recipe", kcal: 1741 },
+            { name: "Just Food for Dogs Chicken Recipe", kcal: 1532 },
+            { name: "Just Food for Dogs Beef Recipe", kcal: 1275 },
+            { name: "Salmon Oil", kcal: 8458 },
+            { name: "Primal Goat Milk Cranberry Blast", kcal: 1300 },
+            { name: "Duck Feet", kcal: 3642 },
+            { name: "Small Batch Chicken Hearts", kcal: 2700 },
+            { name: "Coconut Oil", kcal: 9000 },
+            { name: "Peanut Butter", kcal: 5300 },
+            { name: "Bone Broth", kcal: 3680 }
+        ];
+
+        let foodCount = 0;
+
+        document.getElementById('addFoodButton').addEventListener('click', function() {
+            if (foodCount >= 8) {
+                document.getElementById('foodLimitMessage').style.display = 'block';
+                return;
+            }
+            document.getElementById('foodLimitMessage').style.display = 'none';
+            foodCount++;
+            const foodInput = document.createElement('div');
+            foodInput.className = "food-input";
+
+            foodInput.innerHTML = `
+                <label for="food">Select Food ${foodCount}:</label>
+                <select class="food-select" onchange="toggleManualInput(this)">
+                    <option value="">Select a food</option>
+                    ${foods.map(food => `<option value="${food.kcal}">${food.name} (${food.kcal} kcal/kg)</option>`).join('')}
+                    <option value="manual">Manually Enter kcal/kg</option>
+                </select>
+                <input type="number" class="manual-input" placeholder="Enter kcal/kg" min="1" style="display:none;">
+                <label for="portion">Portion of Meal (%):</label>
+                <input type="number" class="portion-input" min="0" max="100" value="0">
+                <button class="delete-button" type="button">Delete Food Type</button>
+            `;
+
+            document.getElementById('foodInputs').appendChild(foodInput);
+
+            // Add delete functionality
+            foodInput.querySelector('.delete-button').addEventListener('click', function() {
+                foodInput.remove();
+                foodCount--;
+                document.getElementById('foodLimitMessage').style.display = 'none';
+                updateFoodInputs();
+            });
+        });
+
+        function toggleManualInput(select) {
+            const manualInput = select.nextElementSibling;
+            if (select.value === "manual") {
+                manualInput.style.display = 'block';
+            } else {
+                manualInput.style.display = 'none';
+            }
+        }
+
+        function updateFoodInputs() {
+            const foodInputs = document.querySelectorAll('.food-input');
+            foodCount = foodInputs.length;
+            foodInputs.forEach((input, index) => {
+                input.querySelector('label').innerText = `Select Food ${index + 1}:`;
+            });
+        }
+
+        document.getElementById('calculate').addEventListener('click', function() {
+            const foodInputs = document.querySelectorAll('.food-input');
+            let totalKcalPerMeal = 0;
+            let totalPortion = 0;
+
+            const portions = [];
+
+            foodInputs.forEach(input => {
+                const kcalPerKg = parseFloat(input.querySelector('.food-select').value) ||
+                    parseFloat(input.querySelector('.manual-input').value);
+                const portion = parseFloat(input.querySelector('.portion-input').value);
+
+                if (kcalPerKg && portion > 0) {
+                    totalKcalPerMeal += kcalPerKg * (portion / 100);
+                    totalPortion += portion;
+                    portions.push({ kcalPerKg, portion });
+                }
+            });
+
+            if (totalPortion !== 100) {
+                document.getElementById('result').innerText = "Total portion must equal 100%.";
+                return;
+            }
+
+            const multiplier = parseFloat(document.getElementById('goal').value);
+            const meals = parseInt(document.getElementById('meals').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+
+            if (!weight || meals < 1) {
+                document.getElementById('result').innerText = "Please enter valid values.";
+                return;
+            }
+
+            const kgWeight = weight * 0.453592; // Convert lbs to kg
+            const kcalPerGram = totalKcalPerMeal / 1000; // Convert KCal per Kg to KCal per gram
+            const restingEnergyRequirement = 70 * Math.pow(kgWeight, 0.75);
+            const dailyKcal = restingEnergyRequirement * multiplier;
+            const kcalPerMeal = dailyKcal / meals;
+
+            const gramsPerMeal = kcalPerMeal / kcalPerGram; // Convert KCal per meal to grams
+
+            let output = `Total Grams per Meal: ${Math.round(gramsPerMeal)} grams\n`;
+            portions.forEach((food, index) => {
+                const gramsForFood = (food.portion / 100) * gramsPerMeal;
+                output += `Food ${index + 1} (${food.kcalPerKg} kcal/kg): ${Math.round(gramsForFood)} grams\n`;
+            });
+
+            document.getElementById('result').innerText = output;
+        });
+    </script>
+</body>
+</html>
