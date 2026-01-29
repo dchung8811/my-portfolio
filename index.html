@@ -373,6 +373,17 @@
       .bio-grid{ grid-template-columns: 1fr; }
       .qa{ grid-template-columns: 1fr; }
     }
+
+    /* Personal Work hover (match Selected Work feel) */
+    .pw-card{
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .pw-card:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 34px 90px rgba(0,0,0,.45);
+    }
   </style>
 </head>
 
@@ -402,7 +413,7 @@
 
       <div class="cta-card">
         <p>Let's talk!</p>
-        <button class="btn" onclick="location.href='#contact'">Get in touch</button>
+        <button class="btn" id="getInTouchBtn" type="button">Get in touch</button>
       </div>
     </div>
 
@@ -550,35 +561,55 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
   
         <!-- ✅ 1. Wedding Website (FIRST) -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <a href="https://www.denniesandkassidy.com"
-             class="block" target="_blank" rel="noreferrer">
-            <img src="https://ucarecdn.com/cf6e7bd5-05aa-4d8c-92fd-2b97854edfbb/WeddingWebsite.png"
-                 alt="Wedding Website"
-                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
-  
+        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
+
+          <!-- Overlay link makes the whole card clickable -->
+          <a
+            href="https://www.denniesandkassidy.com"
+            target="_blank"
+            rel="noreferrer"
+            class="pw-main-link"
+            aria-label="Open Wedding Website">
+          </a>
+
+          <div class="pw-content">
+            <img
+              src="https://ucarecdn.com/cf6e7bd5-05aa-4d8c-92fd-2b97854edfbb/WeddingWebsite.png"
+              alt="Wedding Website"
+              class="w-full h-auto object-cover rounded-t-lg mb-4"
+            />
+
             <h3 class="text-xl font-semibold mb-2">Wedding Website</h3>
-  
+
+            <!-- GitHub link (separate, clickable, does NOT break the card) -->
+            <a
+              href="https://github.com/denniesandkassidy/wedding.git"
+              target="_blank"
+              rel="noreferrer"
+              class="pw-github inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4 mb-4">
+              View GitHub →
+            </a>
+
             <h4 class="text-m font-semibold mb-2">Situation</h4>
             <p class="text-gray-700">
               After getting engaged in 2024, we needed a wedding website to manage RSVPs, registries, and guest communication.
               Existing platforms felt overly templatized and confusing from a guest experience standpoint.
             </p>
-  
+
             <h4 class="text-m font-semibold mb-2 mt-4">Product</h4>
             <p class="text-gray-700">
               I designed and built a custom wedding website focused on simplicity, clarity, and delight—defining requirements
               from firsthand frustration, prototyping flows, and shipping a polished end-to-end experience.
             </p>
-          </a>
-        </div>
+          </div>
+        </div>        
   
         <!-- 2. Dog Food Calculator -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
           <a href="Dog Food Calculator.html" class="block">
             <img src="https://ucarecdn.com/f8366f4b-f81a-41b3-9ac2-9973ea7aecc0/DogFoodCalculator.png"
                  alt="Dog Food Calculator"
-                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
+                 class="block h-full">
   
             <h3 class="text-xl font-semibold mb-2">Dog Food Calculator</h3>
   
@@ -597,9 +628,9 @@
         </div>
   
         <!-- 3. Budgeting App -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
           <a href="https://www.youtube.com/watch?v=1IjPhGCT8-E"
-             class="block" target="_blank" rel="noreferrer">
+              class="block h-full">
             <img src="https://ucarecdn.com/1884ed33-5015-4684-ad54-2697b6c0716a/BudgetingApp.png"
                  alt="Budgeting App"
                  class="w-full h-auto object-cover rounded-t-lg mb-4" />
@@ -615,8 +646,8 @@
         </div>
   
         <!-- 4. The Book Barterer -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <a href="The Book Barterer.html" class="block">
+        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
+          <a href="The Book Barterer.html" class="block h-full">
             <img src="https://ucarecdn.com/8eb67153-88fb-44d8-bf33-75bc6a74c4f7/BookBarterer.png"
                  alt="The Book Barterer"
                  class="w-full h-auto object-cover rounded-t-lg mb-4" />
@@ -638,9 +669,9 @@
         </div>
   
         <!-- 5. Job Application Tracker -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
           <a href="https://www.google.com/url?q=https%3A%2F%2F1drv.ms%2Fx%2Fs!AuBW6LXPmdYNgb8-EAkryfN7M5k6iA"
-             class="block" target="_blank" rel="noreferrer">
+          class="block h-full">
             <img src="https://ucarecdn.com/9fe15a3f-54e8-4093-92ad-20f5b6ca8335/JobApplicationTracker.png"
                  alt="Job Application Tracker"
                  class="w-full h-auto object-cover rounded-t-lg mb-4" />
@@ -661,6 +692,42 @@
           </a>
         </div>
   
+        <!-- 6. This Website (LAST) -->
+        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
+
+          <!-- Overlay link makes the whole card clickable -->
+          <a
+            href="https://www.dennieschung.com"
+            target="_blank"
+            rel="noreferrer"
+            class="pw-main-link"
+            aria-label="Open Wedding Website">
+          </a>
+
+          <div class="pw-content">
+            <img
+              src="https://ucarecdn.com/0bceda5f-f549-425f-81b1-ab5363e29230/Screenshot20260129at25257PM.png"
+              alt="Wedding Website"
+              class="w-full h-auto object-cover rounded-t-lg mb-4"
+            />
+
+            <h3 class="text-xl font-semibold mb-2">Product Portfolio Website</h3>
+
+            <!-- GitHub link (separate, clickable, does NOT break the card) -->
+            <a
+              href="https://github.com/dchung8811/my-portfolio.git"
+              target="_blank"
+              rel="noreferrer"
+              class="pw-github inline-block text-sm text-gray-500 hover:text-gray-900 underline underline-offset-4 mb-4">
+              View GitHub →
+            </a>
+
+            <h4 class="text-m font-semibold mb-2">Context/Product</h4>
+            <p class="text-gray-700">
+              I designed and vibecoded this website! It was an incredible learning experience for me coming from a non-technical/non-programming background. Take a look at the website, explore, and see my Github! And as always, I'm open to feedback! This is a labor of love and this website transformed from a Google site, always iterating, always making it better.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -814,6 +881,16 @@
       const menu = document.getElementById('menuOverlay');
       const openBtn = document.getElementById('openMenu');
       const closeBtn = document.getElementById('closeMenu');
+      // Close menu + navigate to Contact section
+      const getInTouchBtn = document.getElementById('getInTouchBtn');
+      getInTouchBtn?.addEventListener('click', () => {
+        closeMenu();
+        // wait a tick so the close animation/paint happens before scrolling
+        setTimeout(() => {
+          window.location.hash = '#contact';
+        }, 0);
+      });
+
 
       const openMenu = () => { menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false'); };
       const closeMenu = () => { menu.classList.remove('open'); menu.setAttribute('aria-hidden', 'true'); };
