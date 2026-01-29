@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accelerating Guest Users through Checkout</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #eef2f3;
+    }
+
+    header {
+      background-color: rgb(31, 41, 55);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 24px 0 16px;
+    }
+
+    section {
+      max-width: 80%;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.1);
+      padding: 30px;
+      margin-top: -30px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 30px 0;
+      padding: 20px 0;
+      border-top: 1px solid #eaeaea;
+      border-bottom: 1px solid #eaeaea;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .stat h3 {
+      font-size: 2rem;
+      color: #4CAF50;
+      margin: 0;
+    }
+
+    .image-container {
+        display: flex; /* Use flexbox to arrange images in a row */
+        justify-content: center; /* Center the images */
+        gap: 20px; /* Optional: Add space between images */
+    }
+
+    .image-container img {
+        max-width: 45%; /* Set maximum width for images */
+        height: auto; /* Maintain aspect ratio */
+    }
+    
+    .image-container2 {
+        display: flex; /* Use flexbox to arrange images in a row */
+        justify-content: center; /* Center the images */
+        gap: 20px; /* Optional: Add space between images */
+    }
+
+    .image-container2 img {
+        max-width: 100%; /* Set maximum width for images */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    /* ✅ FIXED RESPONSIVE VIDEO */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,.15);
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .cta {
+      display: block;
+      text-align: center;
+      margin: 40px auto 10px;
+      padding: 15px;
+      background-color: rgb(234, 179, 8);
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      max-width: 220px;
+    }
+
+    .cta:hover {
+      background-color: #d9a307;
+    }
+
+    @media (max-width: 768px) {
+      section { max-width: 92%; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Accelerating Guest Users through Checkout</h1>
+  <h2>Providing Our Guest Customers with a Seamless Way to Pay</h2>
+</header>
+
+<section>
+
+  <h2>Project Overview</h2>
+  <p>
+    Stripe Link for Cards Integration - A checkout acceleration initiative to reduce friction and improve conversion rates for URBN’s guest and returning customers by enabling one-click payment experiences through Stripe’s Link for Cards product.
+  </p>
+
+  <div class="stats">
+    <div class="stat">
+      <h3>15%</h3>
+      <p>Conversion Uplift for Returning Users</p>
+    </div>
+    <div class="stat">
+      <h3>35%</h3>
+      <p>of All Credit Card Purchases</p>
+    </div>
+    <div class="stat">
+      <h3>>$300M</h3>
+      <p>Annual Demand</p>
+    </div>
+  </div>
+
+  <h2>The Opportunity</h2>
+  <p>
+    Our customers - particularly guest customers - face significant friction at checkout when paying with cards. They need to manually enter their 16-digit card number, 3-digit CVC, and expiration date for every purchase. This creates unnecessary barriers to conversion.
+  </p>
+
+  <h2>Key Data Points</h2>
+  <p>
+    • <strong>Existing Link Customers</strong> — 14% of URBN Customers already use Link across other merchants.<br>
+    • <strong>Conversion Uplift</strong> — Stripe's data shows Link drives a 19.3% conversion uplift for returning users at merchants with repeat purchase patterns similar to URBN's.<br>
+    • <strong>Saved Payments</strong> — A significant portion of URBN's logged-in customers make multiple purchases per year using the same card, making them ideal candidates for saved payment methods. By enabling Link for Cards, returning customers can authenticate via a simple OTP and select saved payment methods from their Link wallet instead of re-entering card details manually each time.
+  </p>
+
+  <h2>My Role</h2>
+  <p>
+    As the Product Manager for the Purchase team, I owned the end-to-end delivery of this initiative:<br>
+	∙	Product strategy & requirements definition: Wrote the PRD defining the problem space, success metrics, and functional requirements for different customer segments<br>
+	∙	Stakeholder alignment: Coordinated across engineering teams, brand teams (UO, FP, Anthropologie, Terrain), and our external partner Stripe to ensure alignment on implementation approach<br>
+	∙	A/B test design & analysis: Defined test cohorts, success metrics, and analysis framework to measure checkout CVR impact across login status, device type, and acquisition channel<br>
+	∙	Technical coordination: Worked with engineering on implementation details including OTP flows, Link authentication states, and payment method display logic<br>
+	∙	Issue management: Tracked and prioritized bugs including billing address issues and unintended Link display on internal CC websites<br>
+	∙	Data analysis: Wrote SQL queries to analyze customer payment behavior and identify opportunity size for repeat purchasers using the same card
+  </p>
+
+  <h2>The Product</h2>
+  <p>
+    Stripe Link for Cards serves as a checkout accelerator that autofills payment information for customers who have previously saved their cards to Link.
+How it works:
+	∙	Customers who aren’t signed into Link have their email automatically passed into the authentication field
+	∙	An OTP is triggered and sent to their email or phone
+	∙	Once authenticated, customers can access saved payment methods from their Link wallet
+	∙	Authenticated customers can complete checkout with one click instead of manually entering card details
+Implementation approach:
+We ran this as an A/B test to measure impact on checkout conversion rates across multiple dimensions:
+	∙	Login status (Guest vs. Authorized customers)
+	∙	Device type (Mobile vs. Desktop)
+	∙	Channel (Direct, Paid, Social, etc.)
+The control group maintained the existing card entry experience, while the variant group saw the Link for Cards option in the payment element.
+  </p>
+
+  <div class="image-container">
+    <img src="https://ucarecdn.com/f5ccaaec-116b-4be6-bc2a-77ee49a43a20/Link_1.png" alt="Situation Image">
+    <img src="https://ucarecdn.com/00b45463-bfc0-4465-9288-22a438df60b1/Link_2.png" alt="Situation Image">
+  </div>
+
+  <div class="image-container2">
+    <img src="https://ucarecdn.com/e39d8a60-0568-4d8c-9575-f0bde3067c0d/Link_3.png" alt="Link checkout flow">
+  </div>
+  
+
+  <h2>Results</h2>
+  <p>• Created a seamless checkout experience for our Guest Users with Link Accounts allowing them to easily access saved payment methods</p>
+  <p>• >300K sign-ups for Link via URBN Sites</p>
+  <p>• >$300M in annual demand coming from Link helping spur growth for the Link ecosystem, for merchants, and for customers</p>
+  <p>• 15% in conversion uplift from returning users</p>
+  <p>• Minimal fraud uptick (measured via Refunds and Chargebacks)</p>
+
+  <a href="index2.html" class="cta">Back home</a>
+
+</section>
+
+</body>
+</html>

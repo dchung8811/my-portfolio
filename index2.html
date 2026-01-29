@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dennies Chung</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link href="output.css" rel="stylesheet" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg-dark: #0b0f12;
+      --bg-dark-2: #0f1418;
+      --ink: #f5f7fa;
+      --muted: rgba(245,247,250,.72);
+
+      --pill: rgba(255,255,255,.10);
+      --pill-border: rgba(255,255,255,.10);
+
+      --accent: #d04b2e;
+      --green: #6ad37a;
+    }
+
+    html{ scroll-behavior: smooth; }
+    body{
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--ink);
+    }
+
+    .stage{
+      min-height: 100vh;
+      background: radial-gradient(1200px 800px at 30% 20%, rgba(255,255,255,.06), transparent 55%),
+                  radial-gradient(900px 700px at 70% 70%, rgba(255,255,255,.05), transparent 55%),
+                  linear-gradient(180deg, var(--bg-dark), var(--bg-dark-2));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wrap{
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px 28px;
+    }
+
+    .top-controls{
+      position: fixed;
+      right: 32px;
+      top: 26px;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .pill{
+      height: 56px;
+      padding: 0 26px;
+      border-radius: 999px;
+      background: var(--pill);
+      border: 1px solid var(--pill-border);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .round-btn{
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      background: var(--pill);
+      border: 1px solid var(--pill-border);
+      backdrop-filter: blur(10px);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .hamburger{
+      width: 18px;
+      height: 12px;
+      position: relative;
+    }
+    .hamburger span{
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255,255,255,.85);
+      border-radius: 2px;
+    }
+    .hamburger span:nth-child(1){ top: 0; }
+    .hamburger span:nth-child(2){ top: 5px; opacity: .85; }
+    .hamburger span:nth-child(3){ top: 10px; opacity: .75; }
+
+    .hero{
+      padding-top: 18vh;
+      padding-bottom: 10vh;
+    }
+
+    .hero h1{
+      margin: 0;
+      font-weight: 500;
+      line-height: 1.02;
+      font-size: clamp(44px, 6.2vw, 96px);
+      letter-spacing: -0.02em;
+    }
+
+    .hero .highlight{
+      background: var(--accent);
+      padding: .12em .18em;
+      border-radius: 6px;
+      display: inline-block;
+      transform: translateY(.04em);
+      color: #fff;
+    }
+
+    /* Typing cursor */
+    .hero h1.typing::after{
+      content: "▍";
+      margin-left: 8px;
+      opacity: .85;
+      animation: caretBlink 1s steps(1) infinite;
+    }
+    @keyframes caretBlink { 50% { opacity: 0; } }
+
+    .hero .down{
+      margin-top: 54px;
+      display: flex;
+      justify-content: center;
+    }
+    .down a{
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: var(--green);
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+    }
+    .down svg{ width: 22px; height: 22px; fill: #0b0f12; }
+
+    .menu{
+      position: fixed;
+      inset: 0;
+      background: rgba(15,18,22,.96);
+      z-index: 80;
+      display: none;
+    }
+    .menu.open{ display: block; }
+
+    .menu-inner{
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .menu-links{
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+    .menu-links a{
+      font-size: clamp(44px, 5vw, 84px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+      opacity: .95;
+    }
+    .menu-links a:hover{ opacity: 1; }
+
+    .menu-close{
+      position: fixed;
+      right: 32px;
+      top: 26px;
+      z-index: 90;
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      border: 0;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #0b0f12;
+      font-size: 26px;
+    }
+
+    .cta-card{
+      background: #f29b16;
+      border-radius: 34px;
+      padding: 34px 32px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    }
+    .cta-card p{
+      margin: 0;
+      color: rgba(255,255,255,.92);
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+    .cta-card p strong{ color: #fff; font-weight: 700; }
+    .cta-card .btn{
+      margin-top: 22px;
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      padding: 16px 18px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      background: rgba(255,255,255,.95);
+      color: #111;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .menu-footer{
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      display: flex;
+      gap: 14px;
+      opacity: .9;
+    }
+    .icon-pill{
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 14px;
+    }
+
+    .metrics{
+      background: var(--bg-dark);
+      padding: 80px 0 96px;
+    }
+    .tiles{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    .tile{
+      border-radius: 34px;
+      padding: 32px 34px;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 24px 70px rgba(0,0,0,.35);
+    }
+    .tile .big{
+      font-size: clamp(46px, 5vw, 76px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: #111;
+      line-height: 1;
+    }
+    .tile .label{
+      font-size: 22px;
+      color: rgba(0,0,0,.75);
+      line-height: 1.2;
+    }
+
+    .c1{ background: #f29b16; }
+    .c2{ background: #f4c37a; }
+    .c3{ background: #f6ead3; }
+    .c4{ background: #ee5b45; }
+    .c5{ background: #f7a0a0; }
+    .c6{ background: #f7e3e1; }
+
+    /* Clickable metric tiles */
+    .tile-link{
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .tile.clickable{
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .tile.clickable:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 34px 90px rgba(0,0,0,.45);
+    }
+
+    .bio{
+      background: #f6f4ef;
+      color: #121416;
+      padding: 0 0 96px;
+    }
+
+    .bio-inner{
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 58px 28px 0;
+    }
+
+    .bio-grid{
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 44px;
+      align-items: start;
+    }
+
+    .bio h2{
+      margin: 0 0 22px;
+      font-size: 44px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .bio p{
+      margin: 0 0 18px;
+      font-size: 16px;
+      line-height: 1.55;
+      color: rgba(18,20,22,.78);
+    }
+
+    .qa{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px 36px;
+      margin-top: 20px;
+    }
+    .qa .item{
+      border-top: 1px solid rgba(18,20,22,.14);
+      padding-top: 14px;
+    }
+    .qa .num{
+      font-weight: 600;
+      color: rgba(18,20,22,.9);
+      margin-right: 6px;
+    }
+    .qa .q{
+      font-weight: 600;
+      color: rgba(18,20,22,.9);
+    }
+
+    /* Personal Work heading: same sizing/feel as bio h2, aligned to same container */
+    .personal-work-heading{
+      margin: 54px 0 22px;
+      font-size: 44px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: #121416;
+    }
+
+    @media (max-width: 980px){
+      .menu-inner{ grid-template-columns: 1fr; align-content: start; padding-top: 110px; }
+      .cta-card{ max-width: 520px; }
+      .tiles{ grid-template-columns: 1fr; }
+      .bio-grid{ grid-template-columns: 1fr; }
+      .qa{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating pill + hamburger -->
+  <div class="top-controls">
+    <div class="pill" id="sectionPill">HOME</div>
+    <div class="round-btn" id="openMenu" aria-label="Open menu">
+      <div class="hamburger" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU OVERLAY -->
+  <div class="menu" id="menuOverlay" aria-hidden="true">
+    <button class="menu-close" id="closeMenu" aria-label="Close menu">×</button>
+
+    <div class="menu-inner">
+      <div class="menu-links">
+        <a href="#home" class="menu-link">Home</a>
+        <a href="#selected-work" class="menu-link">Selected Work</a>
+        <a href="#personal-work" class="menu-link">Personal Work</a>
+        <a href="#about" class="menu-link">About</a>
+        <a href="#books" class="menu-link">Books</a>
+      </div>
+
+      <div class="cta-card">
+        <p>Let's talk!</p>
+        <button class="btn" onclick="location.href='#contact'">Get in touch</button>
+      </div>
+    </div>
+
+    <div class="menu-footer">
+      <a class="icon-pill" href="https://www.linkedin.com/in/dennies-chung/" target="_blank" rel="noreferrer">in</a>
+      <a class="icon-pill" href="https://medium.com/@dennieshchung" target="_blank" rel="noreferrer">M</a>
+      <a class="icon-pill" href="https://www.goodreads.com/user/show/90954963-dennies-chung" target="_blank" rel="noreferrer">G</a>
+    </div>
+  </div>
+
+  <!-- HERO / HOME -->
+  <section id="home" class="stage">
+    <div class="wrap hero">
+      <h1 id="typedHero" class="typing"></h1>
+
+      <template id="heroTemplate">
+        Hi, I’m Dennies.<br>
+        I’m a product manager in Philadelphia who turns complexity into
+        <span class="highlight">clarity</span><br>
+        through data, design, and deliberate execution.
+      </template>
+
+      <div class="down">
+        <a href="#selected-work" aria-label="Scroll to selected work">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16.2 6.7 10.9l1.4-1.4 3.9 3.9 3.9-3.9 1.4 1.4z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+<section id="selected-work" class="metrics">
+    <div class="wrap">
+      <div class="tiles">
+  
+        <!-- ✅ 1. Building AI Commerce Flow (FIRST) -->
+        <a href="Building an AI Commerce Flow.html" class="tile-link" aria-label="Open: Building an AI Commerce Flow">
+          <div class="tile c6 clickable">
+            <div class="big">0→1</div>
+            <div class="label">
+              Built AI Commerce Flow (ACP) <span style="opacity:.6;">→</span>
+            </div>
+          </div>
+        </a>
+  
+        <!-- 2. Checkout CTR Lift -->
+        <a href="International Growth.html" class="tile-link" aria-label="Open: International Growth">
+          <div class="tile c1 clickable">
+            <div class="big">8%</div>
+            <div class="label">
+              Checkout CTR Lift <span style="opacity:.6;">→</span>
+            </div>
+          </div>
+        </a>
+  
+        <!-- 3. Address Corrections Savings -->
+        <a href="Address Corrections.html" class="tile-link" aria-label="Open: International Growth">
+            <div class="tile c2 clickable">
+              <div class="big">2M</div>
+              <div class="label">
+                Bottom-Line Savings / Year via Address Corrections <span style="opacity:.6;">→</span>
+              </div>
+            </div>
+          </a>
+  
+        <!-- 4. Fraud Reduction -->
+        <a href="Fighting Checkout Fraud.html" class="tile-link" aria-label="Open: Fighting Checkout Fraud">
+          <div class="tile c3 clickable">
+            <div class="big">99%</div>
+            <div class="label">
+              Fraud trials reduced <span style="opacity:.6;">→</span>
+            </div>
+          </div>
+        </a>
+  
+        <!-- 5. Compliance ARR Saved -->
+        <a href="Introducing Payment Methods.html" class="tile-link" aria-label="Open: Compliance & Payments">
+          <div class="tile c4 clickable">
+            <div class="big">$1M</div>
+            <div class="label">
+              ARR Saved via Compliance <span style="opacity:.6;">→</span>
+            </div>
+          </div>
+        </a>
+  
+        <!-- 6. Retention Increase -->
+        <a href="Link Cards Retention.html" class="tile-link" aria-label="Open: Retention with Link">
+          <div class="tile c5 clickable">
+            <div class="big">15%</div>
+            <div class="label">
+              Increase in Retention with Link <span style="opacity:.6;">→</span>
+            </div>
+          </div>
+        </a>
+  
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- ABOUT -->
+  <section id="about" class="bio">
+    <div class="bio-inner">
+      <div class="bio-grid">
+        <div>
+          <h2>Data-driven —<br>Customer-focused—<br>Outcome-oriented—</h2>
+        </div>
+
+        <div>
+          <div class="qa">
+            <div class="item">
+              <div><span class="num">01</span><span class="q">Who am I?</span></div>
+              <p>Born and raised in Philly. BS in Accounting + MIS. I build product in payments, cart, checkout, and fraud where clarity, trust, and conversion meet.</p>
+            </div>
+
+            <div class="item">
+              <div><span class="num">03</span><span class="q">How do I help?</span></div>
+              <p>I turn messy user journeys into clean flows: diagnose friction, prioritize the leverage points, ship experiments, and scale what works.</p>
+            </div>
+
+            <div class="item">
+              <div><span class="num">02</span><span class="q">What do I care about?</span></div>
+              <p>Simple UX, measurable impact, and craft. Also: books, tennis, and building side projects that teach me new tools.</p>
+            </div>
+
+            <div class="item">
+              <div><span class="num">04</span><span class="q">What keeps me interested?</span></div>
+              <p>Problems that don’t have obvious answers — and teams willing to slow down (when you can afford it) to find them, then ship fast and learn faster.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 70px; border-top: 1px solid rgba(18,20,22,.14); padding-top: 34px;"></div>
+    </div>
+  </section>
+
+  <!-- PERSONAL WORK -->
+<section id="personal-work" class="bio">
+    <div class="bio-inner">
+      <h2 class="personal-work-heading">Personal Work</h2>
+  
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+  
+        <!-- ✅ 1. Wedding Website (FIRST) -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <a href="https://www.denniesandkassidy.com"
+             class="block" target="_blank" rel="noreferrer">
+            <img src="https://ucarecdn.com/cf6e7bd5-05aa-4d8c-92fd-2b97854edfbb/WeddingWebsite.png"
+                 alt="Wedding Website"
+                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
+  
+            <h3 class="text-xl font-semibold mb-2">Wedding Website</h3>
+  
+            <h4 class="text-m font-semibold mb-2">Situation</h4>
+            <p class="text-gray-700">
+              After getting engaged in 2024, we needed a wedding website to manage RSVPs, registries, and guest communication.
+              Existing platforms felt overly templatized and confusing from a guest experience standpoint.
+            </p>
+  
+            <h4 class="text-m font-semibold mb-2 mt-4">Product</h4>
+            <p class="text-gray-700">
+              I designed and built a custom wedding website focused on simplicity, clarity, and delight—defining requirements
+              from firsthand frustration, prototyping flows, and shipping a polished end-to-end experience.
+            </p>
+          </a>
+        </div>
+  
+        <!-- 2. Dog Food Calculator -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <a href="Dog Food Calculator.html" class="block">
+            <img src="https://ucarecdn.com/f8366f4b-f81a-41b3-9ac2-9973ea7aecc0/DogFoodCalculator.png"
+                 alt="Dog Food Calculator"
+                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
+  
+            <h3 class="text-xl font-semibold mb-2">Dog Food Calculator</h3>
+  
+            <h4 class="text-m font-semibold mb-2">Situation</h4>
+            <p class="text-gray-700">
+              Feeding guidelines are generic and often lead to weight gain. With multiple foods and supplements,
+              understanding proper portions becomes even more complex.
+            </p>
+  
+            <h4 class="text-m font-semibold mb-2 mt-4">Product</h4>
+            <p class="text-gray-700">
+              I built a calculator that incorporates caloric density across foods to better estimate daily intake
+              based on real nutritional needs.
+            </p>
+          </a>
+        </div>
+  
+        <!-- 3. Budgeting App -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <a href="https://www.youtube.com/watch?v=1IjPhGCT8-E"
+             class="block" target="_blank" rel="noreferrer">
+            <img src="https://ucarecdn.com/1884ed33-5015-4684-ad54-2697b6c0716a/BudgetingApp.png"
+                 alt="Budgeting App"
+                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
+  
+            <h3 class="text-xl font-semibold mb-2">Budgeting App</h3>
+  
+            <h4 class="text-m font-semibold mb-2">Context</h4>
+            <p class="text-gray-700">
+              Off-the-shelf budgeting tools didn’t match how I think about money,
+              so I built a custom app on Salesforce tailored to my workflow.
+            </p>
+          </a>
+        </div>
+  
+        <!-- 4. The Book Barterer -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <a href="The Book Barterer.html" class="block">
+            <img src="https://ucarecdn.com/8eb67153-88fb-44d8-bf33-75bc6a74c4f7/BookBarterer.png"
+                 alt="The Book Barterer"
+                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
+  
+            <h3 class="text-xl font-semibold mb-2">The Book Barterer</h3>
+  
+            <h4 class="text-m font-semibold mb-2">Context</h4>
+            <p class="text-gray-700">
+              A personal project born from a lifelong love of reading and curiosity about pricing,
+              inventory, and marketplace dynamics.
+            </p>
+  
+            <h4 class="text-m font-semibold mb-2 mt-4">Product</h4>
+            <p class="text-gray-700">
+              An e-commerce site for used and rare books, optimized through iterative pricing,
+              feature prioritization, and customer feedback.
+            </p>
+          </a>
+        </div>
+  
+        <!-- 5. Job Application Tracker -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <a href="https://www.google.com/url?q=https%3A%2F%2F1drv.ms%2Fx%2Fs!AuBW6LXPmdYNgb8-EAkryfN7M5k6iA"
+             class="block" target="_blank" rel="noreferrer">
+            <img src="https://ucarecdn.com/9fe15a3f-54e8-4093-92ad-20f5b6ca8335/JobApplicationTracker.png"
+                 alt="Job Application Tracker"
+                 class="w-full h-auto object-cover rounded-t-lg mb-4" />
+  
+            <h3 class="text-xl font-semibold mb-2">Job Application Tracker</h3>
+  
+            <h4 class="text-m font-semibold mb-2">Situation</h4>
+            <p class="text-gray-700">
+              Tracking job applications manually is error-prone and mentally taxing,
+              especially when responses never arrive.
+            </p>
+  
+            <h4 class="text-m font-semibold mb-2 mt-4">Product</h4>
+            <p class="text-gray-700">
+              A spreadsheet-based system with automation, dashboards, and clear status tracking
+              to reduce cognitive overhead during job searches.
+            </p>
+          </a>
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- BOOKS -->
+  <section id="books" style="padding: 90px 0 120px; background: var(--bg-dark);">
+    <div class="wrap">
+      <div style="max-width: 720px;">
+        <div style="letter-spacing:.2em; text-transform:uppercase; font-size:12px; color: var(--muted);">Books</div>
+        <h2 style="margin:14px 0 0; font-weight:500; font-size:42px; letter-spacing:-.02em;">Reading is part of my product toolkit.</h2>
+        <p style="margin:14px 0 0; color: var(--muted); line-height:1.6;">Fiction for imagination, non-fiction for leverage, and a steady stream of “how it works” books.</p>
+        <a href="https://www.goodreads.com/user/show/90954963-dennies-chung" target="_blank" rel="noreferrer"
+           style="display:inline-block; margin-top:22px; padding:14px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.14); text-decoration:none; color:var(--ink);">
+          View Goodreads →
+        </a>
+      </div>
+    </div>
+  </section>
+
+<!-- Section divider -->
+<div style="background: var(--bg-dark);">
+    <div class="wrap">
+      <div style="border-top: 1px solid rgba(245,247,250,.14); margin: 0 0 90px;"></div>
+    </div>
+  </div>
+  
+  <!-- CONTACT -->
+<section id="contact" style="background: var(--bg-dark); padding: 110px 0 130px;">
+    <div class="wrap">
+      <div style="max-width: 720px;">
+        
+        <div style="letter-spacing:.2em; text-transform:uppercase; font-size:12px; color: var(--muted);">
+          Contact
+        </div>
+  
+        <h2 style="margin:14px 0 0; font-weight:500; font-size:42px; letter-spacing:-.02em;">
+          Let’s build together.
+        </h2>
+  
+        <p style="margin:16px 0 28px; color: var(--muted); line-height:1.6;">
+          If you’re working on a problem, exploring a new product direction,
+          or just want to compare notes — I’m always open to a conversation.
+        </p>
+  
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <a href="mailto:dennieshchung@gmail.com"
+             style="color: var(--ink); text-decoration:none; font-weight:500;">
+            → dennieshchung@gmail.com
+          </a>
+  
+          <a href="https://www.linkedin.com/in/dennies-chung/" target="_blank" rel="noreferrer"
+             style="color: var(--ink); text-decoration:none; font-weight:500;">
+            → LinkedIn
+          </a>
+  
+          <a href="https://medium.com/@dennieshchung" target="_blank" rel="noreferrer"
+             style="color: var(--ink); text-decoration:none; font-weight:500;">
+            → Medium
+          </a>
+  
+          <a href="https://www.goodreads.com/user/show/90954963-dennies-chung" target="_blank" rel="noreferrer"
+             style="color: var(--ink); text-decoration:none; font-weight:500;">
+            → Goodreads
+          </a>
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    // ========= HERO TYPING =========
+    function buildHeroTokens(fragment) {
+      const tokens = [];
+      const walk = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const t = node.nodeValue.replace(/\s+/g, ' ');
+          if (t.trim()) tokens.push({ type: 'text', text: t });
+          return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+        const tag = node.tagName.toLowerCase();
+        if (tag === 'br') { tokens.push({ type: 'br' }); return; }
+        if (tag === 'span') {
+          tokens.push({ type: 'span', className: node.className || '', text: node.textContent || '' });
+          return;
+        }
+        node.childNodes.forEach(walk);
+      };
+      fragment.childNodes.forEach(walk);
+      return tokens;
+    }
+
+    async function typeHero() {
+      const target = document.getElementById('typedHero');
+      const tpl = document.getElementById('heroTemplate');
+      if (!target || !tpl) return;
+
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        target.classList.remove('typing');
+        target.innerHTML = tpl.innerHTML;
+        return;
+      }
+
+      const fragment = tpl.content.cloneNode(true);
+      const tokens = buildHeroTokens(fragment);
+
+      target.innerHTML = '';
+      target.classList.add('typing');
+
+      const speed = 22;
+      const linePause = 160;
+
+      for (const tok of tokens) {
+        if (tok.type === 'br') {
+          target.appendChild(document.createElement('br'));
+          await new Promise(r => setTimeout(r, linePause));
+          continue;
+        }
+
+        if (tok.type === 'span') {
+          const span = document.createElement('span');
+          span.className = tok.className;
+          span.textContent = '';
+          target.appendChild(span);
+
+          for (const ch of tok.text) {
+            span.textContent += ch;
+            await new Promise(r => setTimeout(r, speed));
+          }
+          continue;
+        }
+
+        const textNode = document.createTextNode('');
+        target.appendChild(textNode);
+        for (const ch of tok.text) {
+          textNode.nodeValue += ch;
+          await new Promise(r => setTimeout(r, speed));
+        }
+      }
+
+      target.classList.remove('typing');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(typeHero, 450);
+
+      // Menu open/close
+      const menu = document.getElementById('menuOverlay');
+      const openBtn = document.getElementById('openMenu');
+      const closeBtn = document.getElementById('closeMenu');
+
+      const openMenu = () => { menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false'); };
+      const closeMenu = () => { menu.classList.remove('open'); menu.setAttribute('aria-hidden', 'true'); };
+
+      openBtn?.addEventListener('click', openMenu);
+      closeBtn?.addEventListener('click', closeMenu);
+
+      document.querySelectorAll('.menu-link').forEach(a => a.addEventListener('click', closeMenu));
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
+      });
+
+      // ========= PILL LABEL (IntersectionObserver = reliable) =========
+      const pill = document.getElementById('sectionPill');
+      const defs = [
+        { id: 'home',          label: 'HOME' },
+        { id: 'selected-work', label: 'WORK' },
+        { id: 'about',         label: 'ABOUT' },
+        { id: 'personal-work', label: 'PERSONAL WORK' },
+        { id: 'books',         label: 'BOOKS' },
+      ];
+
+      const observed = defs
+        .map(d => ({ ...d, el: document.getElementById(d.id) }))
+        .filter(d => d.el);
+
+      if (!pill || observed.length === 0) return;
+
+      let activeId = observed[0].id;
+      pill.textContent = observed[0].label;
+
+      const io = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (!visible) return;
+        const match = observed.find(s => s.el === visible.target);
+        if (!match) return;
+
+        if (activeId !== match.id) {
+          activeId = match.id;
+          pill.textContent = match.label;
+        }
+      }, {
+        root: null,
+        rootMargin: "-35% 0px -55% 0px",
+        threshold: [0.05, 0.15, 0.3, 0.5, 0.75],
+      });
+
+      observed.forEach(s => io.observe(s.el));
+    });
+  </script>
+</body>
+</html>
