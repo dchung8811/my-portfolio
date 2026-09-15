@@ -3,202 +3,167 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building an AI Commerce Flow</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VY689R4G2L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VY689R4G2L');
+  </script>
+  <title>Building an AI Commerce Flow · Dennies Chung</title>
+  <meta name="description" content="Launching URBN checkout inside Microsoft Copilot with Stripe's Agentic Commerce Protocol." />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #eef2f3;
-    }
-
-    header {
-      background-color: rgb(31, 41, 55);
-      color: white;
-      text-align: center;
-      padding: 60px 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.2);
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin: 0;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin: 24px 0 16px;
-    }
-
-    section {
-      max-width: 80%;
-      margin: auto;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.1);
-      padding: 30px;
-      margin-top: -30px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      margin: 30px 0;
-      padding: 20px 0;
-      border-top: 1px solid #eaeaea;
-      border-bottom: 1px solid #eaeaea;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .stat {
-      text-align: center;
-      flex: 1;
-      min-width: 160px;
-    }
-
-    .stat h3 {
-      font-size: 2rem;
-      color: #4CAF50;
-      margin: 0;
-    }
-
-    .image-container2 {
-      display: flex;
-      justify-content: center;
-      margin: 30px 0;
-    }
-
-    .image-container2 img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-
-    /* ✅ FIXED RESPONSIVE VIDEO */
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
-      margin: 30px 0;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 6px 24px rgba(0,0,0,.15);
-      background: #000;
-    }
-
-    .video-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .cta {
-      display: block;
-      text-align: center;
-      margin: 40px auto 10px;
-      padding: 15px;
-      background-color: rgb(234, 179, 8);
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      max-width: 220px;
-    }
-
-    .cta:hover {
-      background-color: #d9a307;
-    }
-
-    @media (max-width: 768px) {
-      section { max-width: 92%; }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="case-study.css" rel="stylesheet" />
+  <script src="case-study.js" defer></script>
 </head>
 
-<body>
+<body style="--tile:#f7e3e1; --strong:#ee5b45; --next-tile:#f29b16;">
+  <div class="progress" aria-hidden="true"></div>
 
-<header>
-  <h1>Building an AI Commerce Flow</h1>
-  <h2>Transforming how customers shop through conversational AI</h2>
-</header>
-
-<section>
-
-  <h2>Project Overview</h2>
-  <p>
-    The Agentic Commerce Project is a strategic three-way partnership between URBN, Microsoft, and Stripe that enables customers to discover and purchase URBN products directly inside Microsoft Copilot’s conversational interface.
-  </p>
-
-  <p>
-    This positions URBN as an early mover in conversational commerce — a new sales channel alongside traditional e-commerce and retail.
-  </p>
-
-  <p>
-    <p> The broader industry direction is clear: conversational journeys are converting, and the infrastructure is evolving to make merchant onboarding scalable (e.g., standards like ACP) and payments agent-friendly (e.g., shared payment tokens).</p>
-  </p>
-
-  <div class="stats">
-    <div class="stat">
-      <h3>0→1</h3>
-      <p>Launch production-ready integration</p>
+  <nav class="cs-nav" aria-label="Case study">
+    <div class="inner">
+      <a class="cs-pill" href="index.html#selected-work">← Home</a>
+      <span class="cs-pill count"><span class="dot"></span>Case study 01 / 06</span>
     </div>
-    <div class="stat">
-      <h3>100%</h3>
-      <p>Achieve technical integration stability with zero critical incidents</p>
+  </nav>
+
+  <header class="cs-hero">
+    <div class="wrap">
+      <div class="eyebrow">Agentic Commerce</div>
+      <h1>Building an AI Commerce Flow</h1>
+      <p class="lede">Transforming how customers shop through conversational AI.</p>
+
+      <dl class="meta">
+        <div><dt>Role</dt><dd>Product Lead &amp; design partner</dd></div>
+        <div><dt>Partners</dt><dd>Microsoft, Stripe</dd></div>
+        <div><dt>Team</dt><dd>Engineering, fraud, legal, analytics, brand</dd></div>
+      </dl>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="big">0→1</div>
+          <div class="label">Launch production-ready integration</div>
+        </div>
+        <div class="stat">
+          <div class="big">100%</div>
+          <div class="label">Achieve technical integration stability with zero critical incidents</div>
+        </div>
+      </div>
     </div>
+  </header>
+
+  <main class="cs-body">
+    <div class="wrap cs-grid">
+      <aside class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ol>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#opportunity">The Opportunity</a></li>
+          <li><a href="#partnership">Partnership</a></li>
+          <li><a href="#role">My Role</a></li>
+          <li><a href="#demo">Product Demo</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#references">References</a></li>
+        </ol>
+      </aside>
+
+      <article class="content">
+        <section id="overview" class="block reveal">
+          <h2><span class="num">01</span>Project Overview</h2>
+          <p>The Agentic Commerce Project is a strategic three-way partnership between URBN, Microsoft, and Stripe that enables customers to discover and purchase URBN products directly inside Microsoft Copilot’s conversational interface.</p>
+          <p>This positions URBN as an early mover in conversational commerce — a new sales channel alongside traditional e-commerce and retail.</p>
+          <p>The broader industry direction is clear: conversational journeys are converting, and the infrastructure is evolving to make merchant onboarding scalable (e.g., standards like ACP) and payments agent-friendly (e.g., shared payment tokens).</p>
+        </section>
+
+        <section id="opportunity" class="block reveal">
+          <h2><span class="num">02</span>The Opportunity</h2>
+          <p>Conversational commerce replaces search → click → website flows with natural dialogue, allowing customers to complete purchases without leaving the AI interface.</p>
+        </section>
+
+        <section id="partnership" class="block reveal">
+          <h2><span class="num">03</span>Partnership Structure</h2>
+          <div class="cards">
+            <div class="card">
+              <div class="k">Interface</div>
+              <div class="v">Microsoft</div>
+              <p>Copilot interface &amp; customer experience</p>
+            </div>
+            <div class="card">
+              <div class="k">Payments</div>
+              <div class="v">Stripe</div>
+              <p>Payments + Agentic Commerce Protocol (ACP)</p>
+            </div>
+            <div class="card">
+              <div class="k">Merchant</div>
+              <div class="v">URBN</div>
+              <p>Merchant of record &amp; fulfillment</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="role" class="block reveal">
+          <h2><span class="num">04</span>My Role</h2>
+          <p>I was the Product Lead for the Agentic Commerce Project, where I also served as a design partner in the strategic three-way partnership between URBN, Microsoft, and Stripe. I managed the complex coordination across internal teams (engineering, fraud, legal, analytics, brand stakeholders), external partners (Microsoft and Stripe), and executive leadership while serving as the central communication hub for the initiative.</p>
+          <p>As design partner, I worked collaboratively with technical leads on external and internal teams on integration architecture decisions, manage timeline and scope tradeoffs, and validate technical solutions before implementation.</p>
+          <p>I was also responsible for strategic prioritization decisions, launch timing considerations balancing code freezes and holiday constraints, and investigating future expansion opportunities like Universal Commerce Protocol (UCP).</p>
+        </section>
+
+        <section id="demo" class="block reveal">
+          <h2><span class="num">05</span>Product Demo</h2>
+          <div class="video">
+            <iframe
+              src="https://www.youtube.com/embed/u7W5sxqMKm0?si=mNModz3iW_kzrEiG"
+              title="AI Commerce Flow Demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+        </section>
+
+        <section id="results" class="block reveal">
+          <h2><span class="num">06</span>Results</h2>
+          <ul class="results">
+            <li>Among first retailers to enable direct purchasing within LLMs/conversation AI interface</li>
+            <li>Secured strategic partnership with Stripe and LLM vendor as design partner in Agentic Commerce Protocol</li>
+            <li>Positioned ourselves for platform expansion for future AI platform integrations</li>
+            <li>Implemented comprehensive checkout funnel tracking to capture cart abandonment and checkout completion rates</li>
+            <li>Enabling platform-level attribution (web, Android, iOS) for Copilot orders through channel header implementation</li>
+          </ul>
+        </section>
+
+        <section id="references" class="block reveal">
+          <h2><span class="num">07</span>References</h2>
+          <ul class="list">
+            <li>URBN (e.g. Anthropologie, Urban Outfitters) mentioned in Microsoft Press Release: <a href="https://news.microsoft.com/source/2026/01/08/microsoft-propels-retail-forward-with-agentic-ai-capabilities-that-power-intelligent-automation-for-every-retail-function/" target="_blank" rel="noreferrer">on Microsoft Press Release</a></li>
+            <li>URBN (e.g. Anthropologie, Urban Outfitters) mentioned in Microsoft Copilot blog: <a href="https://about.ads.microsoft.com/en/blog/post/january-2026/conversations-that-convert-copilot-checkout-and-brand-agents" target="_blank" rel="noreferrer">on the Microsoft Advertising blog</a></li>
+            <li>Stripe’s integration with Copilot Checkout supports seamless AI-powered shopping flows: <a href="https://stripe.com/newsroom/news/microsoft-copilot-and-stripe" target="_blank" rel="noreferrer">on the Stripe newsroom</a></li>
+          </ul>
+        </section>
+      </article>
     </div>
-  </div>
+  </main>
 
-  <h2>The Opportunity</h2>
-  <p>
-    Conversational commerce replaces search → click → website flows with natural dialogue, allowing customers to complete purchases without leaving the AI interface.
-  </p>
-
-  <h2>Partnership Structure</h2>
-  <p>
-    • <strong>Microsoft</strong> — Copilot interface & customer experience<br>
-    • <strong>Stripe</strong> — Payments + Agentic Commerce Protocol (ACP)<br>
-    • <strong>URBN</strong> — Merchant of record & fulfillment
-  </p>
-
-  <h2>My Role</h2>
-  <p>
-    I was the Product Lead for the Agentic Commerce Project, where I also served as a design partner in the strategic three-way partnership between URBN, Microsoft, and Stripe. I managed the complex coordination across internal teams (engineering, fraud, legal, analytics, brand stakeholders), external partners (Microsoft and Stripe), and executive leadership while serving as the central communication hub for the initiative. As design partner, I worked collaboratively with technical leads on external and internal teams on integration architecture decisions, manage timeline and scope tradeoffs, and validate technical solutions before implementation. I was also responsible for strategic prioritization decisions, launch timing considerations balancing code freezes and holiday constraints, and investigating future expansion opportunities like Universal Commerce Protocol (UCP).
-  </p>
-
-  <h2>Product Demo</h2>
-
-  <!-- ✅ WORKING YOUTUBE EMBED -->
-  <div class="video-wrapper">
-    <iframe
-      src="https://www.youtube.com/embed/u7W5sxqMKm0?si=mNModz3iW_kzrEiG"     
-      title="AI Commerce Flow Demo"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-      loading="lazy">
-    </iframe>
-  </div>
-
-  <h2>Results</h2>
-  <p>• Among first retailers to enable direct purchasing within LLMs/conversation AI interface</p>
-  <p>• Secured strategic partnership with Stripe and LLM vendor as design partner in Agentic Commerce Protocol</p>
-  <p>• Positioned ourselves for platform expansion for future AI platform integrations</p>
-  <p>• Implemented comprehensive checkout funnel tracking to capture cart abandonment and checkout completion rates</p>
-  <p>• Enabling platform-level attribution (web, Android, iOS) for Copilot orders through channel header implementation</p>
-
-  <h2>References</h2>
-  <p>• URBN (e.g. Anthropologie, Urban Outfitters) mentioned in Microsoft Press Release: <a href="https://news.microsoft.com/source/2026/01/08/microsoft-propels-retail-forward-with-agentic-ai-capabilities-that-power-intelligent-automation-for-every-retail-function/" target="_blank" rel="noreferrer">on Microsoft Press Release</a></p>
-  <p>• URBN (e.g. Anthropologie, Urban Outfitters) mentioned in Microsoft Copilot blog: <a href="https://about.ads.microsoft.com/en/blog/post/january-2026/conversations-that-convert-copilot-checkout-and-brand-agents" target="_blank" rel="noreferrer">on the Microsoft Advertising blog</a></p>
-  <p>• Stripe’s integration with Copilot Checkout supports seamless AI-powered shopping flows: <a href="https://stripe.com/newsroom/news/microsoft-copilot-and-stripe" target="_blank" rel="noreferrer">on the Stripe newsroom</a>.</p>
-
-  <a href="index.html" class="cta">Back home</a>
-
-</section>
-
+  <footer class="cs-foot">
+    <div class="wrap">
+      <a class="next" href="International Growth.html">
+        <div>
+          <div class="k">Next case study</div>
+          <div class="t">International Growth through Local Currency</div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <div class="foot-links">
+        <a href="index.html#selected-work">← Back to all work</a>
+        <span>Dennies Chung</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
