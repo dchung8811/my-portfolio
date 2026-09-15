@@ -94,6 +94,18 @@
       cursor: pointer;
     }
 
+    /* Keep the pill + menu button readable over light sections (toggled by JS) */
+    .pill, .round-btn{
+      transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    .top-controls.on-light .pill,
+    .top-controls.on-light .round-btn{
+      background: rgba(18,20,22,.9);
+      border-color: rgba(18,20,22,.9);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(18,20,22,.18);
+    }
+
     .hamburger{
       width: 18px;
       height: 12px;
@@ -575,7 +587,8 @@
       border-color: #123f38;
       color: #fff;
     }
-    .ff-btn.primary:hover{ background: #0d2f2a; }
+    .ff-btn.primary:hover,
+    .pw-card:hover span.ff-btn.primary{ background: #0d2f2a; }
     .ff-tags{
       display: flex;
       flex-wrap: wrap;
@@ -875,6 +888,8 @@
                  class="block h-full">
   
             <h3 class="text-xl font-semibold mb-2">Dog Food Calculator</h3>
+
+            <span class="ff-links"><span class="ff-btn primary">Try the calculator →</span></span>
   
             <h4 class="text-m font-semibold mb-2">Situation</h4>
             <p class="text-gray-700">
@@ -892,13 +907,15 @@
   
         <!-- 3. Budgeting App -->
         <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
-          <a href="https://www.youtube.com/watch?v=1IjPhGCT8-E"
+          <a href="https://www.youtube.com/watch?v=1IjPhGCT8-E" target="_blank" rel="noreferrer"
               class="block h-full">
             <img src="https://ucarecdn.com/1884ed33-5015-4684-ad54-2697b6c0716a/BudgetingApp.png"
                  alt="Budgeting App"
                  class="w-full h-auto object-cover rounded-t-lg mb-4" />
   
             <h3 class="text-xl font-semibold mb-2">Budgeting App</h3>
+
+            <span class="ff-links"><span class="ff-btn primary">Watch the demo →</span></span>
   
             <h4 class="text-m font-semibold mb-2">Context</h4>
             <p class="text-gray-700">
@@ -909,8 +926,8 @@
         </div>
   
         <!-- 4. The Book Barterer -->
-        <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
-          <a href="The Book Barterer.html" class="block h-full">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <div class="block h-full">
             <img src="https://ucarecdn.com/8eb67153-88fb-44d8-bf33-75bc6a74c4f7/BookBarterer.png"
                  alt="The Book Barterer"
                  class="w-full h-auto object-cover rounded-t-lg mb-4" />
@@ -928,18 +945,20 @@
               An e-commerce site for used and rare books, optimized through iterative pricing,
               feature prioritization, and customer feedback.
             </p>
-          </a>
+          </div>
         </div>
   
         <!-- 5. Job Application Tracker -->
         <div class="bg-white p-6 rounded-lg shadow-lg pw-card">
-          <a href="https://www.google.com/url?q=https%3A%2F%2F1drv.ms%2Fx%2Fs!AuBW6LXPmdYNgb8-EAkryfN7M5k6iA"
+          <a href="https://1drv.ms/x/s!AuBW6LXPmdYNgb8-EAkryfN7M5k6iA" target="_blank" rel="noreferrer"
           class="block h-full">
             <img src="https://ucarecdn.com/9fe15a3f-54e8-4093-92ad-20f5b6ca8335/JobApplicationTracker.png"
                  alt="Job Application Tracker"
                  class="w-full h-auto object-cover rounded-t-lg mb-4" />
   
             <h3 class="text-xl font-semibold mb-2">Job Application Tracker</h3>
+
+            <span class="ff-links"><span class="ff-btn primary">Open the tracker →</span></span>
   
             <h4 class="text-m font-semibold mb-2">Situation</h4>
             <p class="text-gray-700">
@@ -1215,6 +1234,21 @@
         if (pill.textContent !== active.label) pill.textContent = active.label;
       };
 
+      // ========= CONTROLS CONTRAST =========
+      // Switch the pill + menu button to a solid dark style while they sit over a light (.bio) section
+      const controls = document.querySelector('.top-controls');
+      const lightSections = [...document.querySelectorAll('.bio')];
+      const updateControlsTheme = () => {
+        if (!controls) return;
+        const box = controls.getBoundingClientRect();
+        const y = box.top + box.height / 2;
+        const onLight = lightSections.some(s => {
+          const r = s.getBoundingClientRect();
+          return r.top <= y && r.bottom >= y;
+        });
+        controls.classList.toggle('on-light', onLight);
+      };
+
       let ticking = false;
       const onScroll = () => {
         if (ticking) return;
@@ -1223,6 +1257,7 @@
           updateHeroPin();
           updateHeroFade();
           updatePill();
+          updateControlsTheme();
           ticking = false;
         });
       };
@@ -1230,6 +1265,7 @@
       updateHeroPin();
       updateHeroFade();
       updatePill();
+      updateControlsTheme();
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', () => { updateHeroPin(); onScroll(); });
       // The typing animation grows the hero after load, so re-check whether it still fits
