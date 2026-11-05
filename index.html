@@ -423,6 +423,71 @@
       outline-offset: 4px;
     }
 
+    /* ---------- Personal Work: scroll-driven chrome wash ----------
+       Soft iridescent blobs sitting over the section's cream background and
+       under its content. --pw-p is the reader's progress through the section
+       (0 → 1), set by JS on scroll; it drives rotation and hue so the colours
+       shift as you move past. */
+
+    /* overflow:hidden keeps the blurred layer inside this section instead of
+       washing over the dark Books section below it. isolation:isolate makes
+       the section its own stacking context so the z-index:0 layer can never
+       paint over a sibling section. */
+    #personal-work{ position: relative; overflow: hidden; isolation: isolate; }
+    #personal-work > .bio-inner{ position: relative; z-index: 1; }
+
+    /* Slow ambient drift, so the wash is alive even when the page is still. */
+    .pw-chrome-drift{
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      animation: pw-drift 26s ease-in-out infinite alternate;
+    }
+    @keyframes pw-drift{
+      from{ transform: translate3d(-2.5%, 0, 0) scale(1); }
+      to{   transform: translate3d(2.5%, 0, 0) scale(1.05); }
+    }
+
+    /* The section runs thousands of pixels tall. Sizing each blob in viewport
+       units rather than percentages keeps them roughly one screen across, so
+       scrolling actually carries you from one colour into the next instead of
+       sitting inside a single enormous wash. */
+    .pw-chrome{
+      position: absolute;
+      inset: -4% -16%;
+      opacity: .85;
+      background:
+        radial-gradient(70vmin 70vmin at 12%  3%, rgba(86,188,255,.88), transparent 62%),
+        radial-gradient(64vmin 64vmin at 88% 13%, rgba(196,142,255,.84), transparent 62%),
+        radial-gradient(74vmin 74vmin at 20% 27%, rgba(118,240,196,.74), transparent 62%),
+        radial-gradient(68vmin 68vmin at 82% 39%, rgba(255,148,192,.82), transparent 62%),
+        radial-gradient(78vmin 78vmin at 28% 53%, rgba(255,206,130,.70), transparent 64%),
+        radial-gradient(68vmin 68vmin at 80% 66%, rgba(86,188,255,.80), transparent 62%),
+        radial-gradient(74vmin 74vmin at 18% 79%, rgba(196,142,255,.76), transparent 62%),
+        radial-gradient(70vmin 70vmin at 74% 93%, rgba(255,148,192,.74), transparent 62%);
+      filter:
+        blur(70px)
+        saturate(calc(130% + var(--pw-p, 0) * 60%))
+        hue-rotate(calc(var(--pw-p, 0) * 140deg));
+      /* Horizontal parallax only — rotating a layer this tall swings its
+         edges across the viewport. */
+      transform:
+        scale(1.04)
+        translate3d(calc(var(--pw-p, 0) * -6%), 0, 0);
+      will-change: transform, filter;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      /* Keep the colour, drop everything that moves. */
+      .pw-chrome-drift{ animation: none; }
+      .pw-chrome{
+        transform: scale(1.04);
+        filter: blur(70px) saturate(140%);
+        will-change: auto;
+      }
+    }
+
     /* ---------- "See more projects" toggle + drawer ---------- */
 
     /* The toggle is a <button> so it is keyboard-operable; these resets make
@@ -759,6 +824,9 @@
       scroll-padding-left: 0;
     }
     .bookshelf-scroller::-webkit-scrollbar{ display: none; }
+    /* Snap points fight the continuous drift, so JS drops them once the
+       endless loop is running. Without JS the snap behaviour stays. */
+    .bookshelf-scroller.is-looping{ scroll-snap-type: none; }
     .bookshelf-scroller:focus-visible{
       outline: 2px solid var(--green);
       outline-offset: 6px;
@@ -1106,6 +1174,7 @@
 
   <!-- PERSONAL WORK -->
 <section id="personal-work" class="bio">
+    <div class="pw-chrome-drift" aria-hidden="true"><div class="pw-chrome"></div></div>
     <div class="bio-inner">
       <h2 class="personal-work-heading">Personal Work</h2>
   
@@ -1989,6 +2058,41 @@
       reveals.forEach(el => ro.observe(el));
     });
 
+    /* ---------- Personal Work chrome wash ----------
+       Publishes the reader's progress through the section as --pw-p (0 → 1).
+       Reads are rAF-batched and only run while the section is on screen, so
+       scrolling the rest of the page costs nothing. */
+    document.addEventListener('DOMContentLoaded', () => {
+      const section = document.getElementById('personal-work');
+      if (!section || !section.querySelector('.pw-chrome')) return;
+
+      let ticking = false, live = false;
+
+      function apply() {
+        ticking = false;
+        const r = section.getBoundingClientRect();
+        // 0 as the section's top meets the bottom of the viewport,
+        // 1 once its bottom has passed the top.
+        const span = r.height + window.innerHeight;
+        const p = span > 0 ? (window.innerHeight - r.top) / span : 0;
+        section.style.setProperty('--pw-p', Math.min(1, Math.max(0, p)).toFixed(4));
+      }
+      function onScroll() {
+        if (!live || ticking) return;
+        ticking = true;
+        requestAnimationFrame(apply);
+      }
+
+      new IntersectionObserver(([e]) => {
+        live = e.isIntersecting;
+        if (live) apply();
+      }, { threshold: 0 }).observe(section);
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      apply();
+    });
+
     /* ---------- "See more projects" drawer ---------- */
     document.addEventListener('DOMContentLoaded', () => {
       const toggle = document.querySelector('[data-more-toggle]');
@@ -2035,41 +2139,117 @@
       const shelf = document.querySelector('[data-shelf]');
       if (!shelf) return;
 
-      const cards = () => shelf.querySelectorAll('.book-card');
+      const originals = [...shelf.querySelectorAll('.book-card')];
       const countEl = document.querySelector('[data-book-count]');
-      if (countEl) countEl.textContent = cards().length;
+      if (countEl) countEl.textContent = originals.length;
 
       const arrows = document.querySelectorAll('[data-shelf-dir]');
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // One "page" is the visible width less a card peeking in, so the user
+      /* ----- Endless loop -----
+         Two more copies of the shelf are appended and the scroller is parked
+         in the middle one. Crossing a copy boundary jumps scrollLeft back by
+         exactly one set width, which is invisible because the pixels either
+         side of the jump are identical. Copies are hidden from assistive tech
+         and the tab order so each book is still announced once. */
+      const COPIES = 2;
+      for (let i = 0; i < COPIES; i++) {
+        originals.forEach(card => {
+          const clone = card.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          clone.setAttribute('tabindex', '-1');
+          clone.dataset.clone = '';
+          shelf.appendChild(clone);
+        });
+      }
+
+      let setW = 0;
+      function measure() {
+        const card = originals[0];
+        if (!card) return 0;
+        const gap = parseFloat(getComputedStyle(shelf).columnGap) || 18;
+        setW = originals.length * (card.getBoundingClientRect().width + gap);
+        return setW;
+      }
+
+      // Looping and scroll snapping fight each other, so snap is dropped once
+      // the loop is live. Without JS the CSS keeps its snap points.
+      shelf.classList.add('is-looping');
+      measure();
+      shelf.scrollLeft = setW;
+
+      // Returns the correction applied, so the drift accumulator can follow it.
+      function keepInMiddle() {
+        if (!setW) return 0;
+        const x = shelf.scrollLeft;
+        if (x >= setW * 2)       { shelf.scrollLeft = x - setW; return -setW; }
+        if (x < setW * 0.5)      { shelf.scrollLeft = x + setW; return setW; }
+        return 0;
+      }
+
+      /* ----- Gentle auto-rotation -----
+         Paused while the reader is interacting, while the tab is hidden, and
+         while the shelf is off screen. Skipped entirely under reduced motion,
+         where the loop still works but only when the reader scrolls it. */
+      const SPEED = 0.45;          // px per 60fps frame (~27px/s)
+      let holds = 0, rafId = null, prev = 0, pos = null;
+      const hold   = () => { holds++; };
+      const release = () => { holds = Math.max(0, holds - 1); };
+
+      /* scrollLeft is rounded when assigned, so adding a sub-pixel step to it
+         each frame would be swallowed by the rounding and barely move. The
+         fractional position is accumulated here instead and written out whole,
+         resyncing whenever the reader has moved the shelf themselves. */
+      function frame(ts) {
+        const dt = prev ? Math.min(ts - prev, 50) : 16.7;
+        prev = ts;
+        if (holds) {
+          pos = null;                       // reader is driving; resync later
+        } else {
+          if (pos === null || Math.abs(shelf.scrollLeft - pos) > 2) pos = shelf.scrollLeft;
+          pos += SPEED * (dt / 16.7);
+          shelf.scrollLeft = pos;
+          pos += keepInMiddle();
+        }
+        rafId = requestAnimationFrame(frame);
+      }
+      function start() { if (rafId === null && !reduce) { prev = 0; rafId = requestAnimationFrame(frame); } }
+      function stop()  { if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
+
+      ['pointerenter', 'focusin', 'touchstart'].forEach(e => shelf.addEventListener(e, hold, { passive: true }));
+      ['pointerleave', 'focusout', 'touchend', 'touchcancel'].forEach(e => shelf.addEventListener(e, release, { passive: true }));
+      document.addEventListener('visibilitychange', () => document.hidden ? hold() : release());
+
+      // Only animate while the shelf is actually on screen.
+      new IntersectionObserver(([e]) => e.isIntersecting ? start() : stop(), { threshold: 0 }).observe(shelf);
+
+      window.addEventListener('resize', () => {
+        const before = setW;
+        measure();
+        if (before && setW) shelf.scrollLeft = (shelf.scrollLeft / before) * setW;
+      });
+
+      // One "page" is the visible width less a card peeking in, so the reader
       // keeps a visual anchor between jumps.
       function page() {
-        const card = shelf.querySelector('.book-card');
+        const card = originals[0];
         const step = card ? card.getBoundingClientRect().width + 18 : 200;
         return Math.max(step, Math.floor(shelf.clientWidth / step) * step - step);
       }
 
-      function syncArrows() {
-        const max = shelf.scrollWidth - shelf.clientWidth - 1;
-        arrows.forEach(btn => {
-          const dir = Number(btn.dataset.shelfDir);
-          btn.disabled = dir < 0 ? shelf.scrollLeft <= 0 : shelf.scrollLeft >= max;
-        });
-      }
-
       arrows.forEach(btn => {
         btn.addEventListener('click', () => {
+          hold();
           shelf.scrollBy({
             left: Number(btn.dataset.shelfDir) * page(),
             behavior: reduce ? 'auto' : 'smooth'
           });
+          // Let the smooth scroll land before the drift takes over again.
+          setTimeout(release, 700);
         });
       });
 
-      shelf.addEventListener('scroll', syncArrows, { passive: true });
-      window.addEventListener('resize', syncArrows);
-      syncArrows();
+      shelf.addEventListener('scroll', keepInMiddle, { passive: true });
 
       /* Click-drag for mice. Touch and trackpad are left to the browser so
          they keep their native momentum and snap behaviour. */
