@@ -423,6 +423,81 @@
       outline-offset: 4px;
     }
 
+    /* ---------- "See more projects" toggle + drawer ---------- */
+
+    /* The toggle is a <button> so it is keyboard-operable; these resets make
+       it sit in the grid exactly like the <a> tiles around it. */
+    /* The toggle does nothing without JS, so it stays hidden until JS marks
+       the document. A no-JS visitor sees the drawer already open instead. */
+    .more-toggle{ display: none; }
+    .js-more .more-toggle{
+      appearance: none;
+      display: block;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      background: none;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+    }
+    .tile.more-tile{
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: none;
+    }
+    .tile.more-tile .big,
+    .tile.more-tile .label{ color: var(--ink); }
+    .tile.more-tile .label{ color: rgba(245,247,250,.78); }
+    .tile.more-tile .tile-kicker{ color: rgba(245,247,250,.6); }
+    .tile.more-tile .tile-arrow{
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.18);
+      color: var(--ink);
+      transition: background .25s ease, color .25s ease, transform .4s cubic-bezier(.2,.7,.2,1);
+    }
+    .more-toggle:hover .tile.more-tile{ background: rgba(255,255,255,.085); }
+    .more-toggle:hover .tile-arrow,
+    .more-toggle:focus-visible .tile-arrow{ background: #fff; color: #111; transform: none; }
+    .more-toggle:focus-visible{ outline: none; }
+    .more-toggle:focus-visible .tile{ outline: 3px solid #fff; outline-offset: 4px; }
+    /* Chevron points down when collapsed, flips up once the drawer is open */
+    .more-toggle[aria-expanded="true"] .tile-arrow{ transform: rotate(180deg); }
+    .more-toggle[aria-expanded="true"] .more-tile{ background: rgba(255,255,255,.1); }
+
+    /* Drawer. Animating grid-template-rows 0fr → 1fr expands to the content's
+       natural height without hard-coding it or measuring in JS. */
+    /* Open by default, so the work is reachable without JS. JS collapses it
+       on load and hands control to the toggle. */
+    .more-drawer{
+      display: grid;
+      grid-template-rows: 1fr;
+      margin-top: 22px;
+      transition: grid-template-rows .5s cubic-bezier(.2,.7,.2,1), margin-top .5s ease;
+    }
+    .more-drawer > .more-drawer-inner{ overflow: hidden; }
+    .more-drawer.is-collapsed{
+      grid-template-rows: 0fr;
+      margin-top: 0;
+    }
+    /* Keep collapsed tiles out of the tab order. The delay lets the collapse
+       animation finish before the content is hidden from assistive tech. */
+    .more-drawer.is-collapsed > .more-drawer-inner{
+      visibility: hidden;
+      transition: visibility 0s .5s;
+    }
+    .more-drawer:not(.is-collapsed) > .more-drawer-inner{
+      visibility: visible;
+      transition: visibility 0s 0s;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .more-drawer{ transition: none; }
+      .tile.more-tile .tile-arrow{ transition: none; }
+    }
+
     /* Staggered reveal (class .js-motion set by JS so no-JS visitors see everything) */
     .js-motion .reveal{
       opacity: 0;
@@ -879,7 +954,7 @@
     <div class="wrap">
       <div class="work-heading reveal">
         <h2>Selected Work</h2>
-        <span>6 case studies</span>
+        <span>7 case studies</span>
       </div>
       <div class="tiles">
         <a href="Building an AI Commerce Flow.html" class="tile-link reveal" style="--delay:0ms" aria-label="Read case study: Building an AI Commerce Flow">
@@ -954,6 +1029,39 @@
             </div>
           </div>
         </a>
+
+        <button type="button" class="more-toggle reveal" style="--delay:330ms"
+                data-more-toggle aria-expanded="false" aria-controls="more-projects">
+          <div class="tile more-tile clickable">
+            <div class="tile-top">
+              <span class="tile-kicker">More work</span>
+              <span class="tile-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+            </div>
+            <div>
+              <div class="big">+1</div>
+              <div class="label" data-more-label>See more projects</div>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <div class="more-drawer" id="more-projects">
+        <div class="more-drawer-inner">
+          <div class="tiles">
+            <a href="Apple Pay Incrementality.html" class="tile-link" aria-label="Read case study: Did Apple Pay create new orders?">
+              <div class="tile c2 clickable">
+                <div class="tile-top">
+                  <span class="tile-kicker">Case study</span>
+                  <span class="tile-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </div>
+                <div>
+                  <div class="big">~3%</div>
+                  <div class="label">Est. Net-New Orders from Apple Pay</div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1879,6 +1987,42 @@
         });
       }, { rootMargin: '0px 0px -12% 0px' });
       reveals.forEach(el => ro.observe(el));
+    });
+
+    /* ---------- "See more projects" drawer ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.querySelector('[data-more-toggle]');
+      const drawer = document.getElementById('more-projects');
+      if (!toggle || !drawer) return;
+
+      const label = toggle.querySelector('[data-more-label]');
+      const openText = 'See more projects';
+      const closeText = 'Show fewer projects';
+      const big = toggle.querySelector('.big');
+      const count = drawer.querySelectorAll('.tile-link').length;
+      if (big) big.textContent = '+' + count;
+
+      // JS is present: reveal the toggle and collapse the drawer it controls.
+      document.documentElement.classList.add('js-more');
+      drawer.classList.add('is-collapsed');
+      toggle.setAttribute('aria-expanded', 'false');
+
+      toggle.addEventListener('click', () => {
+        const open = !drawer.classList.toggle('is-collapsed');
+        toggle.setAttribute('aria-expanded', String(open));
+        if (label) label.textContent = open ? closeText : openText;
+
+        // On opening, pull the revealed row into view if it landed below the
+        // fold. On closing, leave the scroll position where the reader put it.
+        if (open) {
+          const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          setTimeout(() => {
+            if (drawer.getBoundingClientRect().bottom > window.innerHeight) {
+              drawer.scrollIntoView({ block: 'end', behavior: reduce ? 'auto' : 'smooth' });
+            }
+          }, 520);
+        }
+      });
     });
 
     /* ---------- Favorite books carousel ----------

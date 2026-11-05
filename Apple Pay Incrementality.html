@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VY689R4G2L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VY689R4G2L');
+  </script>
+  <title>Did Apple Pay Create New Orders? · Dennies Chung</title>
+  <meta name="description" content="Measuring whether express Apple Pay placements created net-new orders or just shifted shoppers off cards — a difference-in-differences read with honest confidence levels." />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="case-study.css" rel="stylesheet" />
+  <script src="case-study.js" defer></script>
+</head>
+
+<body style="--tile:#f4c37a; --strong:#c98a1f; --next-tile:#f7e3e1;">
+  <div class="progress" aria-hidden="true"></div>
+
+  <nav class="cs-nav" aria-label="Case study">
+    <div class="inner">
+      <a class="cs-pill" href="index.html#selected-work">← Home</a>
+      <span class="cs-pill count"><span class="dot"></span>Case study 07 / 07</span>
+    </div>
+  </nav>
+
+  <header class="cs-hero">
+    <div class="wrap">
+      <div class="eyebrow">Payments · Product Analytics</div>
+      <h1>Did Apple Pay create new orders?</h1>
+      <p class="lede">Measuring whether express Apple Pay placements grew the business or just moved shoppers off cards — and reporting a result that corrected my own pitch.</p>
+
+      <dl class="meta">
+        <div><dt>Role</dt><dd>Senior Product Manager, Cart, Checkout &amp; Payments</dd></div>
+        <div><dt>Company</dt><dd>A multi-brand specialty retailer</dd></div>
+        <div><dt>Scope</dt><dd>Web &amp; iOS · 3 brands · North America and Europe</dd></div>
+        <div><dt>Window</dt><dd>First two weeks after launch, October</dd></div>
+      </dl>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="big">~3%</div>
+          <div class="label">Estimated net-new web orders in the first two weeks — an early read, not a final number</div>
+        </div>
+        <div class="stat">
+          <div class="big">~3.5%</div>
+          <div class="label">Desktop Safari gain in purchases vs. control — the cleanest single read</div>
+        </div>
+        <div class="stat">
+          <div class="big">~6.9%</div>
+          <div class="label">Mobile web gain vs. control — leans on one control group</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="cs-body">
+    <div class="wrap cs-grid">
+      <aside class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ol>
+          <li><a href="#question">The question</a></li>
+          <li><a href="#harder">Why it was harder</a></li>
+          <li><a href="#approach">Approach</a></li>
+          <li><a href="#found">What we found</a></li>
+          <li><a href="#next">What's next</a></li>
+          <li><a href="#skills">Skills demonstrated</a></li>
+        </ol>
+      </aside>
+
+      <article class="content">
+        <section id="question" class="block reveal">
+          <h2><span class="num">01</span>The question</h2>
+          <p>Did launching Apple Pay as an express option — on product pages and at the top of checkout — create net-new orders, or just shift shoppers who would have paid by card anyway?</p>
+          <p>Apple Pay wasn't new; it had been an available tender for some time. What changed in October was <strong>placement</strong>. North America got mobile web product pages first, with checkout following two weeks later. Europe and the UK launched both together, after a payments routing migration that had a brief rollback.</p>
+        </section>
+
+        <section id="harder" class="block reveal">
+          <h2><span class="num">02</span>Why it was harder than it looked</h2>
+          <p>The obvious analysis is a trap. Apple Pay volume rose after launch, and so did its share of orders — but every shopper who would have paid by card anyway and tapped the new button inflates both while adding zero incremental orders. <strong>Volume is not incrementality.</strong> I named that risk before a single query was written, because it dictates what the design has to rule out.</p>
+          <p>The harder problem came earlier, and wasn't analytical. This competed for the same engineering capacity as everything else, and "add an express button for a tender we already support" is easy to push down the list. Getting it prioritized was the real lift.</p>
+          <p>My case was about friction, not novelty. Among customers who reached the payment step, Apple Pay attempts were more likely to succeed than card attempts — plausibly because a wallet keeps credentials current, though that's my hypothesis, not something I measured. The flow was also familiar and short. That argument won the project — which is partly why I wanted a real incrementality read afterward: to test whether it was true.</p>
+          <p>One more wrinkle: One-Page Checkout launched on web the same day as Apple Pay at checkout, tangling two launches together.</p>
+        </section>
+
+        <section id="approach" class="block reveal">
+          <h2><span class="num">03</span>Approach</h2>
+          <ol class="steps">
+            <li><span><strong>Clean windows.</strong> Two weeks before any launch against two weeks after both were live, excluding the ramp and the routing rollback.</span></li>
+            <li><span><strong>Seasonality control.</strong> Each period compared against the same calendar dates the prior year.</span></li>
+            <li><span><strong>Difference-in-differences.</strong> Surfaces that could show Apple Pay (iPhone browsers, desktop Safari) against surfaces that couldn't (desktop Chrome, Edge, Firefox, Android) as the counterfactual.</span></li>
+            <li><span><strong>Isolating the confound.</strong> A separate team A/B test had already shown One-Page Checkout didn't meaningfully move conversion. I also caught that it had shipped on desktop — which is what made desktop Safari a clean Apple Pay-only read.</span></li>
+            <li><span><strong>Triangulation.</strong> Orders by payment type, payment-step attempts and success, and session conversion. Where they disagreed, I documented it rather than picking the flattering one.</span></li>
+          </ol>
+          <p>I ran the analysis with an AI assistant connected to our data warehouse, using shared analyst skills for querying. I set the direction, challenged the assumptions behind each cut, and corrected a wrong assumption it made about the launch scope. The tooling made iteration fast; the design decisions and the scepticism were the part that mattered.</p>
+        </section>
+
+        <section id="found" class="block reveal">
+          <h2><span class="num">04</span>What we found</h2>
+          <p>All figures are estimates from the first two weeks.</p>
+          <ul class="results">
+            <li>Apple Pay's share of web orders rose from ~20% to ~25% in North America, and ~22% to ~34% in Europe</li>
+            <li>About half that growth looked net-new; the rest was shoppers switching from card</li>
+            <li>Desktop Safari gained ~3.5% in purchases relative to control — the cleanest single read</li>
+            <li>Mobile web gained ~6.9% relative to control</li>
+            <li>Estimated net-new orders came to ~3% of web orders</li>
+          </ul>
+          <p>Then the part that corrected my own pitch. After launch, <strong>Apple Pay's payment success rate was no longer higher than cards.</strong> The advantage I had argued from didn't hold once the feature was live at scale. So the gain wasn't Apple Pay converting better at payment — it was more shoppers reaching payment at all. The placement worked by removing steps earlier in the funnel. That's a different mechanism, and it changes where the next bet should go.</p>
+          <p>I also flagged an operational issue the analysis surfaced incidentally: in Europe, Apple Pay payment success dropped and retries rose after launch. I raised it to investigate with the payment processor rather than treating it as noise.</p>
+        </section>
+
+        <section id="next" class="block reveal">
+          <h2><span class="num">05</span>What I'd do differently, and what's next</h2>
+          <p>Two weeks isn't enough data, and the window included a sale event. The mobile estimate rests mainly on one control group; a second, much smaller control pointed the other way, which I reported rather than dropped. Some of the web gain may be shoppers moving over from the iOS app, so the honest framing is <strong>incremental web orders</strong>.</p>
+          <div class="cards">
+            <div class="card">
+              <div class="k">High confidence</div>
+              <div class="v">Apple Pay volume grew</div>
+            </div>
+            <div class="card">
+              <div class="k">Moderate</div>
+              <div class="v">It lifted conversion</div>
+            </div>
+            <div class="card">
+              <div class="k">Low-to-moderate</div>
+              <div class="v">The size of the lift</div>
+            </div>
+          </div>
+          <ul class="list">
+            <li>A placebo test on pre-launch weeks, to confirm the groups normally move together — the assumption the design rests on</li>
+            <li>A daily-level model with confidence intervals</li>
+            <li>Extending the window to four to six weeks, past the sale event</li>
+            <li>The in-app Apple Pay A/B test already running, as the cleanest causal read available</li>
+          </ul>
+        </section>
+
+        <section id="skills" class="block reveal">
+          <h2><span class="num">06</span>Skills demonstrated</h2>
+          <ul class="list">
+            <li><strong>Stakeholder influence</strong> — won prioritization against competing roadmap work</li>
+            <li><strong>Quasi-experimental design</strong> — difference-in-differences where no A/B test existed</li>
+            <li><strong>Confound identification</strong> — and the cut that turned one into an advantage</li>
+            <li><strong>Triangulation</strong> — three sources, disagreements documented</li>
+            <li><strong>Calibrated reporting</strong> — including the finding that undercut my own argument</li>
+            <li><strong>AI-assisted analysis</strong> — tooling directed, judgment kept human</li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="cs-foot">
+    <div class="wrap">
+      <a class="next" href="Building an AI Commerce Flow.html">
+        <div>
+          <div class="k">Next case study</div>
+          <div class="t">Building an AI Commerce Flow</div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <div class="foot-links">
+        <a href="index.html#selected-work">← Back to all work</a>
+        <span>Dennies Chung</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
