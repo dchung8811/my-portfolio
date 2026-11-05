@@ -627,6 +627,131 @@
     @media (max-width: 980px){
       .pw-featured{ grid-template-columns: 1fr; gap: 24px; }
     }
+
+    /* ---------- Favorite books carousel ---------- */
+
+    .bookshelf{ margin-top: 40px; }
+
+    /* Header row stays aligned with .wrap content */
+    .bookshelf-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 0 0 16px;
+    }
+    .bookshelf-label{
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: rgba(245,247,250,.55);
+    }
+    .bookshelf-nav{ display: flex; gap: 8px; }
+    .bookshelf-arrow{
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      transition: background .2s ease, border-color .2s ease, opacity .2s ease;
+    }
+    .bookshelf-arrow:hover:not(:disabled){
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.28);
+    }
+    .bookshelf-arrow:disabled{ opacity: .3; cursor: default; }
+
+    /* The scroller: native overflow scrolling drives touch swipe on iOS
+       and two-finger trackpad swipe on macOS with no JS involved. */
+    .bookshelf-scroller{
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      /* Keep a horizontal swipe inside the carousel instead of
+         triggering the browser's back-navigation gesture. */
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      padding: 4px 0 28px;
+      scroll-padding-left: 0;
+    }
+    .bookshelf-scroller::-webkit-scrollbar{ display: none; }
+    .bookshelf-scroller:focus-visible{
+      outline: 2px solid var(--green);
+      outline-offset: 6px;
+      border-radius: 14px;
+    }
+    /* While a mouse drag is in progress, suppress the image drag ghost */
+    .bookshelf-scroller.is-dragging{ cursor: grabbing; scroll-snap-type: none; }
+    .bookshelf-scroller.is-dragging .book-card{ pointer-events: none; }
+
+    .book-card{
+      flex: 0 0 auto;
+      width: clamp(142px, 38vw, 186px);
+      scroll-snap-align: start;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform .25s ease;
+    }
+    .book-card:hover{ transform: translateY(-6px); }
+    .book-card:hover .book-cover{
+      box-shadow: 0 22px 48px rgba(0,0,0,.55);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    .book-cover{
+      position: relative;
+      aspect-ratio: 2 / 3;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-dark-2);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 10px 26px rgba(0,0,0,.4);
+      transition: box-shadow .25s ease, border-color .25s ease;
+    }
+    .book-cover img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    .book-title{
+      margin: 12px 0 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+    .book-author{
+      margin: 3px 0 0;
+      font-size: 12.5px;
+      line-height: 1.35;
+      color: rgba(245,247,250,.56);
+    }
+
+    /* Hint that there is more to swipe: fade the right edge on touch screens */
+    .bookshelf-wrap{ position: relative; }
+
+    @media (hover: none){
+      .bookshelf-nav{ display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .book-card{ transition: none; }
+      .book-card:hover{ transform: none; }
+    }
   </style>
 </head>
 
@@ -1043,11 +1168,106 @@
         <div style="letter-spacing:.2em; text-transform:uppercase; font-size:12px; color: var(--muted);">Books</div>
         <h2 style="margin:14px 0 0; font-weight:500; font-size:42px; letter-spacing:-.02em;">Reading is part of my product toolkit.</h2>
         <p style="margin:14px 0 0; color: var(--muted); line-height:1.6;">Fiction for imagination, non-fiction for leverage, and a steady stream of “how it works” books.</p>
-        <a href="https://www.goodreads.com/user/show/90954963-dennies-chung" target="_blank" rel="noreferrer"
-           style="display:inline-block; margin-top:22px; padding:14px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.14); text-decoration:none; color:var(--ink);">
-          View Goodreads →
-        </a>
       </div>
+
+      <!-- Favorite books carousel: swipe on touch, two-finger swipe on a trackpad -->
+      <div class="bookshelf">
+        <div class="bookshelf-head">
+          <div class="bookshelf-label">Favorites · <span data-book-count>0</span> books</div>
+          <div class="bookshelf-nav">
+            <button type="button" class="bookshelf-arrow" data-shelf-dir="-1" aria-label="Scroll to previous books">&#8592;</button>
+            <button type="button" class="bookshelf-arrow" data-shelf-dir="1" aria-label="Scroll to next books">&#8594;</button>
+          </div>
+        </div>
+
+        <div class="bookshelf-scroller" data-shelf tabindex="0" role="region"
+             aria-label="Favorite books — scroll horizontally to see more">
+          <!-- BOOKS:START -->
+          <a class="book-card" href="https://www.goodreads.com/book/show/246041.Gig" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/gig.jpg" alt="Gig by John Bowe" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">Gig</h3>
+              <p class="book-author">John Bowe</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/905.The_Inner_Game_of_Tennis" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/the-inner-game-of-tennis.jpg" alt="The Inner Game of Tennis by W. Timothy Gallwey" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">The Inner Game of Tennis</h3>
+              <p class="book-author">W. Timothy Gallwey</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/7540.Winning_Ugly" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/winning-ugly.jpg" alt="Winning Ugly by Brad Gilbert" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">Winning Ugly</h3>
+              <p class="book-author">Brad Gilbert</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/43615.The_Gunslinger" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/the-gunslinger.jpg" alt="The Gunslinger by Stephen King" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">The Gunslinger</h3>
+              <p class="book-author">Stephen King</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/41161349-parable-of-the-sower" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/parable-of-the-sower.jpg" alt="Parable of the Sower by Octavia E. Butler" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">Parable of the Sower</h3>
+              <p class="book-author">Octavia E. Butler</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/29580.Second_Foundation" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/second-foundation.jpg" alt="Second Foundation by Isaac Asimov" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">Second Foundation</h3>
+              <p class="book-author">Isaac Asimov</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/123224254-mistborn" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/mistborn.jpg" alt="Mistborn by Brandon Sanderson" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">Mistborn</h3>
+              <p class="book-author">Brandon Sanderson</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/33632660-the-ones-who-walk-away-from-omelas" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/the-ones-who-walk-away-from-omelas.jpg" alt="The Ones Who Walk Away from Omelas by Ursula K. Le Guin" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">The Ones Who Walk Away from Omelas</h3>
+              <p class="book-author">Ursula K. Le Guin</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/106835.The_Intelligent_Investor" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/the-intelligent-investor.jpg" alt="The Intelligent Investor by Benjamin Graham" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">The Intelligent Investor</h3>
+              <p class="book-author">Benjamin Graham</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/13642.A_Wizard_of_Earthsea" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/a-wizard-of-earthsea.jpg" alt="A Wizard of Earthsea by Ursula K. Le Guin" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">A Wizard of Earthsea</h3>
+              <p class="book-author">Ursula K. Le Guin</p>
+            </a>
+          <a class="book-card" href="https://www.goodreads.com/book/show/233682.Pet_Sematary" target="_blank" rel="noreferrer">
+              <div class="book-cover">
+                <img src="images/books/pet-sematary.jpg" alt="Pet Sematary by Stephen King" loading="lazy" decoding="async" width="320" height="480">
+              </div>
+              <h3 class="book-title">Pet Sematary</h3>
+              <p class="book-author">Stephen King</p>
+            </a>
+          <!-- BOOKS:END -->
+        </div>
+      </div>
+
+      <a href="https://www.goodreads.com/user/show/90954963-dennies-chung" target="_blank" rel="noreferrer"
+         style="display:inline-block; margin-top:4px; padding:14px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.14); text-decoration:none; color:var(--ink);">
+        View Goodreads →
+      </a>
     </div>
   </section>
 
@@ -1330,6 +1550,94 @@
         });
       }, { rootMargin: '0px 0px -12% 0px' });
       reveals.forEach(el => ro.observe(el));
+    });
+
+    /* ---------- Favorite books carousel ----------
+       Horizontal scrolling itself is native: the scroller is overflow-x:auto,
+       so iOS gives real touch swipe with momentum and macOS gives two-finger
+       trackpad swipe, both for free. This only adds the extras a native
+       scroller does not provide: arrow buttons for plain-mouse users, and
+       click-drag for mice without a horizontal wheel.                        */
+    document.addEventListener('DOMContentLoaded', () => {
+      const shelf = document.querySelector('[data-shelf]');
+      if (!shelf) return;
+
+      const cards = () => shelf.querySelectorAll('.book-card');
+      const countEl = document.querySelector('[data-book-count]');
+      if (countEl) countEl.textContent = cards().length;
+
+      const arrows = document.querySelectorAll('[data-shelf-dir]');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // One "page" is the visible width less a card peeking in, so the user
+      // keeps a visual anchor between jumps.
+      function page() {
+        const card = shelf.querySelector('.book-card');
+        const step = card ? card.getBoundingClientRect().width + 18 : 200;
+        return Math.max(step, Math.floor(shelf.clientWidth / step) * step - step);
+      }
+
+      function syncArrows() {
+        const max = shelf.scrollWidth - shelf.clientWidth - 1;
+        arrows.forEach(btn => {
+          const dir = Number(btn.dataset.shelfDir);
+          btn.disabled = dir < 0 ? shelf.scrollLeft <= 0 : shelf.scrollLeft >= max;
+        });
+      }
+
+      arrows.forEach(btn => {
+        btn.addEventListener('click', () => {
+          shelf.scrollBy({
+            left: Number(btn.dataset.shelfDir) * page(),
+            behavior: reduce ? 'auto' : 'smooth'
+          });
+        });
+      });
+
+      shelf.addEventListener('scroll', syncArrows, { passive: true });
+      window.addEventListener('resize', syncArrows);
+      syncArrows();
+
+      /* Click-drag for mice. Touch and trackpad are left to the browser so
+         they keep their native momentum and snap behaviour. */
+      let down = false, startX = 0, startScroll = 0, moved = 0;
+
+      shelf.addEventListener('pointerdown', e => {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        down = true; moved = 0;
+        startX = e.clientX;
+        startScroll = shelf.scrollLeft;
+      });
+
+      shelf.addEventListener('pointermove', e => {
+        if (!down) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 3) {
+          moved = Math.abs(dx);
+          shelf.classList.add('is-dragging');
+          shelf.setPointerCapture(e.pointerId);
+        }
+        if (moved) shelf.scrollLeft = startScroll - dx;
+      });
+
+      function endDrag(e) {
+        if (!down) return;
+        down = false;
+        shelf.classList.remove('is-dragging');
+        if (e && e.pointerId != null && shelf.hasPointerCapture(e.pointerId)) {
+          shelf.releasePointerCapture(e.pointerId);
+        }
+        // Swallow the click that follows a real drag so it does not open a book.
+        if (moved > 5) {
+          shelf.addEventListener('click', ev => {
+            ev.preventDefault(); ev.stopPropagation();
+          }, { capture: true, once: true });
+        }
+      }
+
+      shelf.addEventListener('pointerup', endDrag);
+      shelf.addEventListener('pointercancel', endDrag);
+      shelf.addEventListener('dragstart', e => e.preventDefault());
     });
   </script>
 </body>
