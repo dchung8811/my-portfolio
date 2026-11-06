@@ -488,6 +488,27 @@
       }
     }
 
+    /* Frosted cards, so the wash reads through the column and not only in
+       the gutters. The blur is what keeps this legible: lowering alpha alone
+       would put a sharp, saturated gradient directly behind body text. */
+    #personal-work .bg-white{
+      background-color: rgba(255,255,255,.62);
+      -webkit-backdrop-filter: blur(26px) saturate(150%);
+      backdrop-filter: blur(26px) saturate(150%);
+      border: 1px solid rgba(255,255,255,.6);
+      box-shadow: 0 18px 50px rgba(18,20,22,.10);
+    }
+    /* Hover already lifts the card; deepen the glass a touch so the text it
+       covers stays the most readable thing on screen. */
+    #personal-work .pw-card:hover{
+      background-color: rgba(255,255,255,.76);
+    }
+    /* No backdrop blur (older Firefox) means an unblurred gradient behind the
+       copy. Fall back to nearly opaque rather than shipping poor contrast. */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+      #personal-work .bg-white{ background-color: rgba(255,255,255,.93); }
+    }
+
     /* ---------- "See more projects" toggle + drawer ---------- */
 
     /* The toggle is a <button> so it is keyboard-operable; these resets make
