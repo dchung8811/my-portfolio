@@ -13,7 +13,7 @@
     gtag('config', 'G-VY689R4G2L');
   </script>
   <title>Purchase Monitor · Dennies Chung</title>
-  <meta name="description" content="An end-to-end checkout conversion monitor for URBN: Snowflake aggregates refreshed daily, a Qlik dashboard, and a Slack anomaly digest that only fires when multiple statistical methods agree." />
+  <meta name="description" content="A checkout conversion monitor for URBN: Snowflake aggregates refreshed daily and a Qlik dashboard, then a rebuild with Data Science into a consensus-based Slack anomaly digest once static Qlik alerts hit their limits." />
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -37,27 +37,27 @@
     <div class="wrap">
       <div class="eyebrow">Checkout · Data Products · Monitoring</div>
       <h1>Purchase Monitor: catching checkout dips before they cost us</h1>
-      <p class="lede">An end-to-end conversion monitor I built for URBN's brands, from table discovery to Snowflake pipelines to a daily Slack digest that only alerts when the statistics agree.</p>
+      <p class="lede">A conversion monitor I built for URBN's brands, from table discovery to Snowflake pipelines and a Qlik dashboard. When static alerts couldn't keep up, I partnered with Data Science to rebuild alerting as a daily Slack digest that only fires when the statistics agree.</p>
 
       <dl class="meta">
         <div><dt>Role</dt><dd>Senior Product Manager, Cart, Checkout &amp; Payments</dd></div>
         <div><dt>Company</dt><dd>URBN</dd></div>
         <div><dt>Scope</dt><dd>Anthropologie, Free People, Terrain, Urban Outfitters · Web &amp; App · Multi-region</dd></div>
-        <div><dt>Stack</dt><dd>Snowflake · Snowflake Tasks · Qlik · Slack</dd></div>
+        <div><dt>Partners</dt><dd>Data Science (alerting rebuild)</dd></div>
       </dl>
 
       <div class="stats">
         <div class="stat">
           <div class="big">5→1</div>
-          <div class="label">Five anomaly methods run on every metric, distilled into one consensus Slack digest</div>
+          <div class="label">Five anomaly methods run on every slice, distilled into one consensus Slack digest</div>
+        </div>
+        <div class="stat">
+          <div class="big">50</div>
+          <div class="label">Qlik's per-user alert cap, the ceiling that pushed alerting into a statistical pipeline</div>
         </div>
         <div class="stat">
           <div class="big">4</div>
           <div class="label">Funnel rates tracked daily, from session to order</div>
-        </div>
-        <div class="stat">
-          <div class="big">10 AM</div>
-          <div class="label">Daily dashboard refresh, fed by scheduled Snowflake tasks</div>
         </div>
       </div>
     </div>
@@ -70,10 +70,12 @@
         <ol>
           <li><a href="#problem">The problem</a></li>
           <li><a href="#discovery">Discovery</a></li>
-          <li><a href="#pipeline">Building the pipeline</a></li>
+          <li><a href="#pipeline">Building v1</a></li>
           <li><a href="#dashboard">The dashboard</a></li>
-          <li><a href="#alerting">Alerting methodology</a></li>
-          <li><a href="#digest">The Slack digest</a></li>
+          <li><a href="#limits">Outgrowing static alerts</a></li>
+          <li><a href="#alerting">Rebuilding with Data Science</a></li>
+          <li><a href="#monitor">The digest &amp; monitor</a></li>
+          <li><a href="#next">What's next</a></li>
           <li><a href="#skills">Skills demonstrated</a></li>
         </ol>
       </aside>
@@ -97,12 +99,12 @@
         </section>
 
         <section id="pipeline" class="block reveal">
-          <h2><span class="num">03</span>Building the pipeline</h2>
+          <h2><span class="num">03</span>Building v1</h2>
           <ol class="steps">
             <li><span><strong>Snowflake aggregates.</strong> Built tables and views on top of the source data, mostly pre-aggregated, so the dashboard reads small, fast tables instead of raw event data.</span></li>
             <li><span><strong>Scheduled refresh.</strong> Set up Snowflake tasks to rebuild those tables every day, with no manual pulls.</span></li>
             <li><span><strong>Qlik dashboard.</strong> Imported the tables into Qlik, which reloads every day at 10 AM so the team starts the day with yesterday's numbers.</span></li>
-            <li><span><strong>Slack alerting.</strong> Layered anomaly detection on the same data and pushed anything outside its expected range into a Slack channel as a daily digest.</span></li>
+            <li><span><strong>Threshold alerts.</strong> Configured alerts that posted to Slack whenever a metric moved outside its set range.</span></li>
           </ol>
         </section>
 
@@ -138,10 +140,32 @@
           </figure>
         </section>
 
+        <section id="limits" class="block reveal">
+          <h2><span class="num">05</span>Outgrowing static alerts</h2>
+          <p>The dashboard worked. The alerting didn't scale. Every combination of brand, region, platform and payment method is its own slice, and v1 hit three walls:</p>
+          <div class="cards">
+            <div class="card">
+              <div class="k">Coverage</div>
+              <div class="v">50 alerts per user</div>
+              <p>Qlik caps alerts per user, nowhere near enough to cover every slice worth watching.</p>
+            </div>
+            <div class="card">
+              <div class="k">Noise</div>
+              <div class="v">Static thresholds</div>
+              <p>A fixed range can't tell a weekend dip or a promo spike from a real problem.</p>
+            </div>
+            <div class="card">
+              <div class="k">Effort</div>
+              <div class="v">Manual runs</div>
+              <p>Deeper checks meant running scripts by hand from a terminal.</p>
+            </div>
+          </div>
+        </section>
+
         <section id="alerting" class="block reveal">
-          <h2><span class="num">05</span>Alerting methodology</h2>
-          <p>The hard part of alerting isn't detecting change. It's not firing on noise. Conversion naturally swings by day of week, by promo, and wildly on low-volume slices like a single payment method in a small market. A single threshold either misses real problems or floods the channel.</p>
-          <p>So I evaluate <strong>five bounds methods</strong> for every combination of slice, metric and day, and the digest only fires on <strong>consensus</strong>: the STL method plus at least one other must agree. Alerts are then de-duplicated against cross-sectional events, so one site-wide issue doesn't show up as twenty separate dips.</p>
+          <h2><span class="num">06</span>Rebuilding alerting with Data Science</h2>
+          <p>I partnered with our Data Science team to rebuild alerting as a statistical pipeline. I brought the v1 data foundation, the metric definitions, and the domain context, like how web data supports deep segmentation while app data is more aggregated. Data Science led the statistical methodology and automation.</p>
+          <p>Instead of one threshold per slice, the new system evaluates <strong>five bounds methods</strong> for every combination of slice, metric and day, and only alerts on <strong>consensus</strong>: the STL method plus at least one other must agree. If only one method flags a day, the alert is suppressed.</p>
 
           <div class="methods-wrap">
             <table class="methods">
@@ -152,7 +176,7 @@
                 <tr>
                   <th scope="row">M1 · Rolling 28d ±2σ</th>
                   <td>Static σ</td>
-                  <td>The original approach. Simple and interpretable, but doesn't model day-of-week or trend.</td>
+                  <td>My original v1 approach. Simple and interpretable, but doesn't model day-of-week or trend.</td>
                 </tr>
                 <tr>
                   <th scope="row">M2 · DOW-aware</th>
@@ -180,50 +204,72 @@
 
           <h3>Why run all five?</h3>
           <p>Each method fails in a different way. Static bounds ignore seasonality, same-weekday comparisons get noisy, EWMA forgets, and Beta intervals are too strict at scale. Requiring agreement filters out each method's particular noise, while running them side by side shows when STL and a second method both catch a real signal that neither would be trusted on alone.</p>
-          <p>Slices are also tiered by volume. High-volume slices lean on STL; the long tail of small markets and payment methods (T3/T4) uses volume-aware and rule-based checks, such as a minimum weekly volume, so a handful of orders can't trigger a page.</p>
+
+          <h3>Rules on top of the statistics</h3>
+          <ul class="list">
+            <li><strong>Volume tiers</strong>: high-volume slices lean on STL; the long tail of small markets and payment methods (T3/T4) uses volume-aware and rule-based checks, so a handful of orders can't trigger an alert</li>
+            <li><strong>Cluster-day suppression</strong>: when six or more slices fire on the same day, it's almost always a promotion or holiday, so those alerts are held back</li>
+            <li><strong>Cross-site outage detection</strong>: when three or more sites dip on the same payment method on the same day, it's flagged as a likely payment-provider incident rather than an internal bug</li>
+          </ul>
         </section>
 
-        <section id="digest" class="block reveal">
-          <h2><span class="num">06</span>The Slack digest</h2>
-          <p>Every morning a single digest posts to the alerts channel, grouped by how urgently someone needs to act:</p>
+        <section id="monitor" class="block reveal">
+          <h2><span class="num">07</span>The Slack digest &amp; Purchase Monitor</h2>
+          <p>The whole pipeline now runs on a schedule with no manual steps: it pulls the data, runs the analysis, posts a digest to a dedicated Slack channel, and publishes an HTML dashboard. The team agreed to treat <strong>the Slack channel as the source of truth</strong> for checkout anomalies.</p>
+          <figure class="shot">
+            <img src="images/purchase-monitor/slack-digest.webp" width="850" height="580" alt="Purchase Anomaly Digest posted in Slack, listing today's notable dips by brand, region, platform and metric, trending-down slices, and long-tail watch items. Values are blurred." loading="lazy">
+            <figcaption>The daily Purchase Anomaly Digest. Values blurred for confidentiality.</figcaption>
+          </figure>
+          <p>Each line carries what's needed to triage without opening anything else: brand and region, platform, metric, the observed value against its baseline and lower bound, and the year-over-year change. Items are grouped by urgency: notable dips to investigate today, slow year-over-year declines for analyst review, and a long-tail watch list.</p>
+
+          <h3>The Purchase Monitor dashboard</h3>
+          <p>For anyone who needs to dig deeper, the companion dashboard has four views:</p>
           <div class="cards cards-2">
             <div class="card">
-              <div class="k">Systemic</div>
-              <div class="v">Cross-cutting issues</div>
-              <p>The same drop across many slices at once, rolled up into one event.</p>
+              <div class="k">Today</div>
+              <div class="v">What fired and why</div>
+              <p>The day's flagged dips with full context.</p>
             </div>
             <div class="card">
-              <div class="k">Dips</div>
-              <div class="v">Investigate today</div>
-              <p>Consensus breaches of the lower bound, with baseline, bound and year-over-year.</p>
+              <div class="k">Trends</div>
+              <div class="v">YoY heatmap</div>
+              <p>Every slice by week against the same week last year, so slow declines stand out.</p>
             </div>
             <div class="card">
-              <div class="k">Trending</div>
-              <div class="v">Analyst review</div>
-              <p>Slow year-over-year declines. Worth a look, not worth paging on-call.</p>
+              <div class="k">Suppressed audit</div>
+              <div class="v">What didn't fire</div>
+              <p>Alerts the consensus and cluster rules held back, so the filtering can be checked rather than trusted blindly.</p>
             </div>
             <div class="card">
-              <div class="k">Watch &amp; mix shift</div>
-              <div class="v">Long tail and mix</div>
-              <p>Rule-based checks on sparse slices, and shifts in traffic or payment mix.</p>
+              <div class="k">Methodology</div>
+              <div class="v">How it decides</div>
+              <p>The five methods and consensus rule, documented next to the data.</p>
             </div>
           </div>
           <figure class="shot">
-            <img src="images/purchase-monitor/slack-digest.webp" width="850" height="580" alt="Purchase Anomaly Digest posted in Slack, listing today's notable dips by brand, region, platform and metric, trending-down slices, and long-tail watch items. Values are blurred." loading="lazy">
-            <figcaption>A daily Purchase Anomaly Digest. Values blurred for confidentiality.</figcaption>
+            <img src="images/purchase-monitor/trends-heatmap.webp" width="1438" height="944" alt="Trends view of the Purchase Monitor: a heatmap with one row per brand, region, platform and payment method slice and one column per week, colored red for down year-over-year and green for up. Values are blurred." loading="lazy">
+            <figcaption>The Trends view: year-over-year change by week for each slice. Red is down, green is up. Values blurred for confidentiality.</figcaption>
           </figure>
-          <p>Each line carries the context needed to triage without opening anything else: brand and region, platform, metric, the observed value against its baseline and lower bound, and the year-over-year change.</p>
+          <p>The dashboard is deliberately kept to a small group who know the baselines well. Reading hundreds of slices takes domain context, so the digest is for everyone and the dashboard is for investigation.</p>
+        </section>
+
+        <section id="next" class="block reveal">
+          <h2><span class="num">08</span>What's next</h2>
+          <ul class="list">
+            <li>Running QA on the daily alerts and feeding results back to tune the system</li>
+            <li>Extending the same pattern to other metrics, like session drops, starting with the KPIs that matter most in finance reviews</li>
+          </ul>
         </section>
 
         <section id="skills" class="block reveal">
-          <h2><span class="num">07</span>Skills demonstrated</h2>
+          <h2><span class="num">09</span>Skills demonstrated</h2>
           <ul class="list">
             <li><strong>Data discovery</strong>: mapped the funnel across URBN's data ecosystem before writing a pipeline</li>
             <li><strong>Data engineering</strong>: Snowflake aggregate tables and scheduled tasks for daily refresh</li>
             <li><strong>BI &amp; visualization</strong>: a Qlik dashboard that breaks conversion into actionable funnel steps</li>
-            <li><strong>Statistical anomaly detection</strong>: five bounds methods with a consensus rule to keep alerts trustworthy</li>
-            <li><strong>Operational design</strong>: a tiered Slack digest that separates "act today" from "keep an eye on"</li>
-            <li><strong>End-to-end ownership</strong>: from raw tables to the alert a team acts on</li>
+            <li><strong>Knowing when to rebuild</strong>: recognized when static alerting hit its ceiling</li>
+            <li><strong>Cross-functional collaboration</strong>: partnered with Data Science on consensus-based anomaly detection</li>
+            <li><strong>Operational adoption</strong>: made the Slack digest the team's source of truth, with a feedback loop to keep improving it</li>
           </ul>
         </section>
       </article>
