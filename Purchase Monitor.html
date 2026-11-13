@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VY689R4G2L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VY689R4G2L');
+  </script>
+  <title>Purchase Monitor · Dennies Chung</title>
+  <meta name="description" content="An end-to-end checkout conversion monitor for URBN: Snowflake aggregates refreshed daily, a Qlik dashboard, and a Slack anomaly digest that only fires when multiple statistical methods agree." />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="case-study.css" rel="stylesheet" />
+  <script src="case-study.js" defer></script>
+</head>
+
+<body style="--tile:#f29b16; --strong:#e08a0b; --next-tile:#f7e3e1;">
+  <div class="progress" aria-hidden="true"></div>
+
+  <nav class="cs-nav" aria-label="Case study">
+    <div class="inner">
+      <a class="cs-pill" href="index.html#selected-work">← Home</a>
+      <span class="cs-pill count"><span class="dot"></span>Case study 08 / 08</span>
+    </div>
+  </nav>
+
+  <header class="cs-hero">
+    <div class="wrap">
+      <div class="eyebrow">Checkout · Data Products · Monitoring</div>
+      <h1>Purchase Monitor: catching checkout dips before they cost us</h1>
+      <p class="lede">An end-to-end conversion monitor I built for URBN's brands, from table discovery to Snowflake pipelines to a daily Slack digest that only alerts when the statistics agree.</p>
+
+      <dl class="meta">
+        <div><dt>Role</dt><dd>Senior Product Manager, Cart, Checkout &amp; Payments</dd></div>
+        <div><dt>Company</dt><dd>URBN</dd></div>
+        <div><dt>Scope</dt><dd>Anthropologie, Free People, Terrain, Urban Outfitters · Web &amp; App · Multi-region</dd></div>
+        <div><dt>Stack</dt><dd>Snowflake · Snowflake Tasks · Qlik · Slack</dd></div>
+      </dl>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="big">5→1</div>
+          <div class="label">Five anomaly methods run on every metric, distilled into one consensus Slack digest</div>
+        </div>
+        <div class="stat">
+          <div class="big">4</div>
+          <div class="label">Funnel rates tracked daily, from session to order</div>
+        </div>
+        <div class="stat">
+          <div class="big">10 AM</div>
+          <div class="label">Daily dashboard refresh, fed by scheduled Snowflake tasks</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="cs-body">
+    <div class="wrap cs-grid">
+      <aside class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ol>
+          <li><a href="#problem">The problem</a></li>
+          <li><a href="#discovery">Discovery</a></li>
+          <li><a href="#pipeline">Building the pipeline</a></li>
+          <li><a href="#dashboard">The dashboard</a></li>
+          <li><a href="#alerting">Alerting methodology</a></li>
+          <li><a href="#digest">The Slack digest</a></li>
+          <li><a href="#skills">Skills demonstrated</a></li>
+        </ol>
+      </aside>
+
+      <article class="content">
+        <section id="problem" class="block reveal">
+          <h2><span class="num">01</span>The problem</h2>
+          <p>Checkout conversion is the number everyone in Purchase watches, but across four brands, multiple regions, web and app, and every payment method, there are far too many lines to eyeball. A dip in one brand's app conversion in one country can sit unnoticed in an aggregate that looks perfectly healthy.</p>
+          <p>I wanted two things: <strong>one place to see the whole checkout funnel</strong>, sliced any way we needed, and <strong>a system that tells us when something is actually wrong</strong>, without crying wolf every weekend.</p>
+        </section>
+
+        <section id="discovery" class="block reveal">
+          <h2><span class="num">02</span>Discovery</h2>
+          <p>Before building anything, I mapped the tables across URBN's data ecosystem that held the pieces of the funnel: sessions, cart visits, checkout starts, orders and demand, and the dimensions we'd want to cut them by.</p>
+          <ul class="list">
+            <li><strong>Volume measures</strong>: sessions, cart visits, began checkout, sessions with purchase, orders, demand</li>
+            <li><strong>Dimensions</strong>: region, brand, site, data source, channel grouping, device category, browser</li>
+            <li><strong>Grain</strong>: daily, so the same tables could power both trend lines and day-level anomaly checks</li>
+          </ul>
+          <p>Getting this right up front meant the dashboard and the alerting could share a single source of truth instead of each reinventing the definitions.</p>
+        </section>
+
+        <section id="pipeline" class="block reveal">
+          <h2><span class="num">03</span>Building the pipeline</h2>
+          <ol class="steps">
+            <li><span><strong>Snowflake aggregates.</strong> Built tables and views on top of the source data, mostly pre-aggregated, so the dashboard reads small, fast tables instead of raw event data.</span></li>
+            <li><span><strong>Scheduled refresh.</strong> Set up Snowflake tasks to rebuild those tables every day, with no manual pulls.</span></li>
+            <li><span><strong>Qlik dashboard.</strong> Imported the tables into Qlik, which reloads every day at 10 AM so the team starts the day with yesterday's numbers.</span></li>
+            <li><span><strong>Slack alerting.</strong> Layered anomaly detection on the same data and pushed anything outside its expected range into a Slack channel as a daily digest.</span></li>
+          </ol>
+        </section>
+
+        <section id="dashboard" class="block reveal">
+          <h2><span class="num">04</span>The dashboard</h2>
+          <p>The Qlik dashboard puts the whole funnel on one screen: raw volumes across the top, four headline rates beneath them, and each rate trended by brand, with filters for every dimension from discovery.</p>
+          <div class="cards cards-2">
+            <div class="card">
+              <div class="k">Rate 1</div>
+              <div class="v">Topline CVR</div>
+              <p>Sessions that end in a purchase. The headline number.</p>
+            </div>
+            <div class="card">
+              <div class="k">Rate 2</div>
+              <div class="v">Cart Visit Rate</div>
+              <p>How many sessions make it to the cart.</p>
+            </div>
+            <div class="card">
+              <div class="k">Rate 3</div>
+              <div class="v">Checkout Visit Rate</div>
+              <p>How many sessions begin checkout.</p>
+            </div>
+            <div class="card">
+              <div class="k">Rate 4</div>
+              <div class="v">Checkout CVR</div>
+              <p>How many checkouts become orders.</p>
+            </div>
+          </div>
+          <p>Splitting topline conversion into its funnel steps is what makes a dip actionable. "CVR is down" starts a hunt; "checkout CVR is down on UO Canada app" points at a team.</p>
+          <figure class="shot">
+            <img src="images/purchase-monitor/qlik-dashboard.webp" width="2000" height="1070" alt="Checkout CVR Metrics dashboard in Qlik: filters for region, brand, site, data source, channel, device and browser; volume totals; four headline rates; and four trend charts by brand. Values are blurred." loading="lazy">
+            <figcaption>The Qlik dashboard. Values blurred for confidentiality.</figcaption>
+          </figure>
+        </section>
+
+        <section id="alerting" class="block reveal">
+          <h2><span class="num">05</span>Alerting methodology</h2>
+          <p>The hard part of alerting isn't detecting change. It's not firing on noise. Conversion naturally swings by day of week, by promo, and wildly on low-volume slices like a single payment method in a small market. A single threshold either misses real problems or floods the channel.</p>
+          <p>So I evaluate <strong>five bounds methods</strong> for every combination of slice, metric and day, and the digest only fires on <strong>consensus</strong>: the STL method plus at least one other must agree. Alerts are then de-duplicated against cross-sectional events, so one site-wide issue doesn't show up as twenty separate dips.</p>
+
+          <div class="methods-wrap">
+            <table class="methods">
+              <thead>
+                <tr><th scope="col">Method</th><th scope="col">Type</th><th scope="col">Notes</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">M1 · Rolling 28d ±2σ</th>
+                  <td>Static σ</td>
+                  <td>The original approach. Simple and interpretable, but doesn't model day-of-week or trend.</td>
+                </tr>
+                <tr>
+                  <th scope="row">M2 · DOW-aware</th>
+                  <td>Same-day-of-week comparison</td>
+                  <td>Compares each day to its last four same-weekday values. Reduces weekday/weekend bias, but bounds get noisy at small samples.</td>
+                </tr>
+                <tr>
+                  <th scope="row">M3 · EWMA</th>
+                  <td>Exponentially weighted</td>
+                  <td>Reacts to recent shifts, but can absorb a persistent dip into the new baseline within about two weeks.</td>
+                </tr>
+                <tr class="is-primary">
+                  <th scope="row">M4 · STL residual</th>
+                  <td>Trend + weekly seasonality</td>
+                  <td><strong>Primary for high-volume slices (T1/T2).</strong> Decomposes the series and places bounds on the residual, not the raw value, so weekend lifts don't fire as anomalies.</td>
+                </tr>
+                <tr>
+                  <th scope="row">M5 · Beta CI</th>
+                  <td>Bayesian, volume-aware</td>
+                  <td><strong>Best for sparse slices (T3/T4).</strong> Treats attempts as Bernoulli trials, so intervals widen automatically at low volume. At high volume it over-fires, so it's a sensitivity check rather than a primary source.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Why run all five?</h3>
+          <p>Each method fails in a different way. Static bounds ignore seasonality, same-weekday comparisons get noisy, EWMA forgets, and Beta intervals are too strict at scale. Requiring agreement filters out each method's particular noise, while running them side by side shows when STL and a second method both catch a real signal that neither would be trusted on alone.</p>
+          <p>Slices are also tiered by volume. High-volume slices lean on STL; the long tail of small markets and payment methods (T3/T4) uses volume-aware and rule-based checks, such as a minimum weekly volume, so a handful of orders can't trigger a page.</p>
+        </section>
+
+        <section id="digest" class="block reveal">
+          <h2><span class="num">06</span>The Slack digest</h2>
+          <p>Every morning a single digest posts to the alerts channel, grouped by how urgently someone needs to act:</p>
+          <div class="cards cards-2">
+            <div class="card">
+              <div class="k">Systemic</div>
+              <div class="v">Cross-cutting issues</div>
+              <p>The same drop across many slices at once, rolled up into one event.</p>
+            </div>
+            <div class="card">
+              <div class="k">Dips</div>
+              <div class="v">Investigate today</div>
+              <p>Consensus breaches of the lower bound, with baseline, bound and year-over-year.</p>
+            </div>
+            <div class="card">
+              <div class="k">Trending</div>
+              <div class="v">Analyst review</div>
+              <p>Slow year-over-year declines. Worth a look, not worth paging on-call.</p>
+            </div>
+            <div class="card">
+              <div class="k">Watch &amp; mix shift</div>
+              <div class="v">Long tail and mix</div>
+              <p>Rule-based checks on sparse slices, and shifts in traffic or payment mix.</p>
+            </div>
+          </div>
+          <figure class="shot">
+            <img src="images/purchase-monitor/slack-digest.webp" width="850" height="580" alt="Purchase Anomaly Digest posted in Slack, listing today's notable dips by brand, region, platform and metric, trending-down slices, and long-tail watch items. Values are blurred." loading="lazy">
+            <figcaption>A daily Purchase Anomaly Digest. Values blurred for confidentiality.</figcaption>
+          </figure>
+          <p>Each line carries the context needed to triage without opening anything else: brand and region, platform, metric, the observed value against its baseline and lower bound, and the year-over-year change.</p>
+        </section>
+
+        <section id="skills" class="block reveal">
+          <h2><span class="num">07</span>Skills demonstrated</h2>
+          <ul class="list">
+            <li><strong>Data discovery</strong>: mapped the funnel across URBN's data ecosystem before writing a pipeline</li>
+            <li><strong>Data engineering</strong>: Snowflake aggregate tables and scheduled tasks for daily refresh</li>
+            <li><strong>BI &amp; visualization</strong>: a Qlik dashboard that breaks conversion into actionable funnel steps</li>
+            <li><strong>Statistical anomaly detection</strong>: five bounds methods with a consensus rule to keep alerts trustworthy</li>
+            <li><strong>Operational design</strong>: a tiered Slack digest that separates "act today" from "keep an eye on"</li>
+            <li><strong>End-to-end ownership</strong>: from raw tables to the alert a team acts on</li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="cs-foot">
+    <div class="wrap">
+      <a class="next" href="Building an AI Commerce Flow.html">
+        <div>
+          <div class="k">Next case study</div>
+          <div class="t">Building an AI Commerce Flow</div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <div class="foot-links">
+        <a href="index.html#selected-work">← Back to all work</a>
+        <span>Dennies Chung</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
