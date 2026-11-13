@@ -13,7 +13,7 @@
     gtag('config', 'G-VY689R4G2L');
   </script>
   <title>Purchase Monitor · Dennies Chung</title>
-  <meta name="description" content="A checkout conversion monitor for URBN: Snowflake aggregates refreshed daily and a Qlik dashboard, then a rebuild with Data Science into a consensus-based Slack anomaly digest once static Qlik alerts hit their limits." />
+  <meta name="description" content="A checkout conversion monitor for URBN: Snowflake aggregates refreshed daily and a Qlik dashboard, then a rebuild with Data Science into a consensus-based Slack anomaly digest, run daily by Claude, once static Qlik alerts hit their limits." />
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -44,6 +44,7 @@
         <div><dt>Company</dt><dd>URBN</dd></div>
         <div><dt>Scope</dt><dd>Anthropologie, Free People, Terrain, Urban Outfitters · Web &amp; App · Multi-region</dd></div>
         <div><dt>Partners</dt><dd>Data Science (alerting rebuild)</dd></div>
+        <div><dt>Stack</dt><dd>Snowflake · Qlik · Slack · Claude</dd></div>
       </dl>
 
       <div class="stats">
@@ -215,7 +216,7 @@
 
         <section id="monitor" class="block reveal">
           <h2><span class="num">07</span>The Slack digest &amp; Purchase Monitor</h2>
-          <p>The whole pipeline now runs on a schedule with no manual steps: it pulls the data, runs the analysis, posts a digest to a dedicated Slack channel, and publishes an HTML dashboard. The team agreed to treat <strong>the Slack channel as the source of truth</strong> for checkout anomalies.</p>
+          <p>The whole pipeline now runs on <strong>Claude</strong>. It's packaged as a Claude skill that an always-on scheduler runs every day with no manual steps: Claude pulls the data, runs the anomaly analysis, posts the digest to a dedicated Slack channel, and publishes an HTML dashboard. No more running scripts from a terminal. The team agreed to treat <strong>the Slack channel as the source of truth</strong> for checkout anomalies.</p>
           <figure class="shot">
             <img src="images/purchase-monitor/slack-digest.webp" width="850" height="580" alt="Purchase Anomaly Digest posted in Slack, listing today's notable dips by brand, region, platform and metric, trending-down slices, and long-tail watch items. Values are blurred." loading="lazy">
             <figcaption>The daily Purchase Anomaly Digest. Values blurred for confidentiality.</figcaption>
@@ -269,6 +270,7 @@
             <li><strong>BI &amp; visualization</strong>: a Qlik dashboard that breaks conversion into actionable funnel steps</li>
             <li><strong>Knowing when to rebuild</strong>: recognized when static alerting hit its ceiling</li>
             <li><strong>Cross-functional collaboration</strong>: partnered with Data Science on consensus-based anomaly detection</li>
+            <li><strong>AI-powered automation</strong>: the daily analysis runs as a scheduled Claude skill instead of scripts run by hand</li>
             <li><strong>Operational adoption</strong>: made the Slack digest the team's source of truth, with a feedback loop to keep improving it</li>
           </ul>
         </section>
