@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="Inter, -apple-system, Segoe UI, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Ask Dennies — architecture</title>
+  <desc id="d">Notes, docs, transcripts and artifacts are split into passages and embedded at build time into static index files inside a single HTML artifact. In the browser, a question is embedded locally and scored against every passage by meaning and keywords; the top 12 go to Claude with the question. Claude answers with citations and a confidence score, uses live tools only when needed, and proposes actions that run only after approval. New files are indexed in the browser and shared with everyone.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5b6b70"/></marker>
+    <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient>
+  </defs>
+  <rect width="1200" height="700" rx="24" fill="#f7f9f9"/>
+  <text x="40" y="58" font-size="26" font-weight="700" fill="#14201e">Ask Dennies — a miniature vector database inside one HTML file</text>
+  <text x="40" y="86" font-size="15" fill="#5b6b70">Build once on a laptop · search in the viewer's browser · Claude answers with receipts</text>
+
+  <!-- column 1: sources -->
+  <text x="40" y="132" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">1 · KNOWLEDGE</text>
+  <g font-size="14" fill="#14201e">
+    <rect x="40" y="146" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="174">My working-notes wiki</text>
+    <rect x="40" y="198" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="226">Design docs &amp; artifacts I made</text>
+    <rect x="40" y="250" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="278">Meeting notes &amp; transcripts</text>
+    <rect x="40" y="302" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="330">Docs, slides, PDFs &amp; sheets</text>
+    <rect x="40" y="354" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="382">Knowledge graph of my notes</text>
+  </g>
+
+  <!-- column 2: build -->
+  <text x="340" y="132" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">2 · BUILD (LAPTOP)</text>
+  <rect x="340" y="146" width="250" height="252" rx="14" fill="#fff" stroke="#d8e0e0"/>
+  <g font-size="14" fill="#14201e">
+    <text x="358" y="176" font-weight="700">Extract → chunk → embed</text>
+    <text x="358" y="206">• ~18,000 passages</text>
+    <text x="358" y="232">• model2vec static embeddings</text>
+    <text x="358" y="252" fill="#5b6b70" font-size="13">   256 dims, int8-quantized</text>
+    <text x="358" y="280">• Tokenizer re-written in JS</text>
+    <text x="358" y="300" fill="#5b6b70" font-size="13">   (matches the reference exactly)</text>
+    <text x="358" y="328">• Shipped as static files</text>
+    <text x="358" y="348" fill="#5b6b70" font-size="13">   inside the artifact (~12 MB)</text>
+    <text x="358" y="376">• No server, DB or API key</text>
+  </g>
+  <path d="M290 272 H334" stroke="#5b6b70" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- column 3: browser -->
+  <text x="640" y="132" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">3 · IN THE BROWSER</text>
+  <rect x="640" y="146" width="520" height="252" rx="14" fill="#fff" stroke="url(#g)" stroke-width="2"/>
+  <g font-size="14" fill="#14201e">
+    <rect x="660" y="166" width="140" height="44" rx="10" fill="#e3f2ef"/><text x="676" y="194">Your question</text>
+    <rect x="824" y="166" width="140" height="44" rx="10" fill="#e3f2ef"/><text x="838" y="194">Embed locally</text>
+    <rect x="988" y="166" width="156" height="44" rx="10" fill="#e3f2ef"/><text x="1002" y="187" font-size="13">Hybrid search</text><text x="1002" y="203" font-size="11" fill="#5b6b70">cosine + BM25 · &lt;70 ms</text>
+    <path d="M800 188 H818" stroke="#5b6b70" stroke-width="2" marker-end="url(#a)"/>
+    <path d="M964 188 H982" stroke="#5b6b70" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="988" y="236" width="156" height="44" rx="10" fill="#e6ecfb"/><text x="1006" y="263">Top 12 passages</text>
+    <path d="M1066 210 V230" stroke="#5b6b70" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="824" y="236" width="140" height="44" rx="10" fill="url(#g)"/><text x="868" y="263" fill="#fff" font-weight="700">Claude</text>
+    <path d="M988 258 H970" stroke="#5b6b70" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="660" y="236" width="140" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="672" y="256" font-size="13">Answer + sources</text><text x="672" y="271" font-size="12" fill="#2d6a2f">+ confidence score</text>
+    <path d="M824 258 H806" stroke="#5b6b70" stroke-width="2" marker-end="url(#a)"/>
+    <text x="660" y="316" font-size="13" fill="#5b6b70">Only if needed: live tools under the viewer's own access —</text>
+    <text x="660" y="336" font-size="13" fill="#5b6b70">cloud drive · team chat · read-only warehouse SQL</text>
+    <text x="660" y="366" font-size="13" fill="#14201e">Most answers start in ~3 s, in one step (vs. 10–30 s of tool hops)</text>
+  </g>
+
+  <!-- bottom row: trust & loop -->
+  <text x="40" y="452" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">4 · TRUST, ACTION &amp; LEARNING LOOP</text>
+  <g font-size="13" fill="#14201e">
+    <rect x="40" y="466" width="270" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="58" y="496" font-weight="700" font-size="15">Agentic, with approval</text>
+    <text x="58" y="524">Drafts messages and emails, books</text>
+    <text x="58" y="544">meetings, files tickets, saves docs</text>
+    <text x="58" y="564">as editable cards. Nothing runs</text>
+    <text x="58" y="584">until a person clicks Approve.</text>
+
+    <rect x="330" y="466" width="270" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="348" y="496" font-weight="700" font-size="15">Honest by design</text>
+    <text x="348" y="524">Every answer cites its sources</text>
+    <text x="348" y="544">and ends with a High / Medium / Low</text>
+    <text x="348" y="564">confidence score. Unanswered ones</text>
+    <text x="348" y="584">land in an owner-only gap backlog.</text>
+
+    <rect x="620" y="466" width="270" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="638" y="496" font-weight="700" font-size="15">Self-updating index</text>
+    <text x="638" y="524">Drop a file in the shared folder:</text>
+    <text x="638" y="544">the page embeds it in the browser</text>
+    <text x="638" y="564">and saves it once, for everyone.</text>
+    <text x="638" y="584">No rebuild, no pipeline to run.</text>
+
+    <rect x="910" y="466" width="250" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="928" y="496" font-weight="700" font-size="15">Owner insights</text>
+    <text x="928" y="524">Visit log: who visited, when,</text>
+    <text x="928" y="544">which tabs, what they asked.</text>
+    <text x="928" y="564">Disclosed to visitors; owners</text>
+    <text x="928" y="584">can delete any entry.</text>
+  </g>
+  <text x="40" y="672" font-size="12" fill="#5b6b70">Built with Claude Code as a pair-programmer. Runs entirely as a Claude artifact: one HTML page plus static index files.</text>
+</svg>

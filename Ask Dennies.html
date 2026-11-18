@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VY689R4G2L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VY689R4G2L');
+  </script>
+  <title>Ask Dennies · Dennies Chung</title>
+  <meta name="description" content="Ask Dennies: a miniature vector database inside a single HTML page. Stakeholders ask it anything I know and get answers from my notes, meeting transcripts and docs, with sources and a confidence score." />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="case-study.css" rel="stylesheet" />
+  <script src="case-study.js" defer></script>
+
+  <style>
+    /* Page-specific pieces, built from the shared case-study tokens. */
+    .cs-hero .shot{ margin: 48px 0 0; }
+    .cs-hero .shot figcaption{ color: var(--muted); }
+
+    /* Architecture diagram: full content width; scrolls sideways on small screens */
+    .arch{
+      margin: 8px 0 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #f7f9f9;
+    }
+    .arch svg{ display: block; width: 100%; min-width: 760px; height: auto; }
+    .arch-note{ margin: 0 0 28px; font-size: 13px; color: var(--muted); }
+    .arch-note a{ font-weight: 500; }
+
+    /* Knowledge map: static preview that swaps in the live map on click */
+    .map-embed{
+      margin: 24px 0 8px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #060a13;
+      box-shadow: 0 24px 60px rgba(18,20,22,.14);
+    }
+    .map-preview{
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+    .map-preview img{ display: block; width: 100%; height: auto; }
+    .map-preview .play{
+      position: absolute;
+      right: 22px;
+      top: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.94);
+      color: var(--ink);
+      font: 500 15px/1 Inter, system-ui, sans-serif;
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+      transition: transform .2s ease;
+      white-space: nowrap;
+    }
+    .map-preview:hover .play,
+    .map-preview:focus-visible .play{ transform: translateY(-2px); }
+    .map-preview:focus-visible{ outline: 3px solid var(--strong); outline-offset: -3px; }
+    .map-embed iframe{ display: block; width: 100%; height: 900px; border: 0; }
+    .map-caption{ margin: 10px 4px 0; font-size: 13px; color: var(--muted); text-align: center; }
+
+    /* Gallery: two columns, the easter egg closes it at full width */
+    .gallery{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 8px 0 0;
+    }
+    .gallery .shot{ margin: 0; }
+    .gallery .shot:last-child{ grid-column: 1 / -1; }
+
+    .cards .card.wide{ grid-column: 1 / -1; }
+    /* Let the wide diagram scroll inside its box instead of stretching the single-column grid */
+    .content{ min-width: 0; }
+
+    .tech{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0 22px;
+      padding: 0;
+      list-style: none;
+    }
+    .tech li{
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--body);
+    }
+
+    @media (max-width: 640px){
+      .gallery{ grid-template-columns: 1fr; }
+      .map-preview .play{ font-size: 13px; padding: 9px 14px; top: auto; bottom: 12px; right: 12px; }
+    }
+  </style>
+</head>
+
+<body style="--tile:#8fd8c4; --strong:#1f7a5c; --next-tile:#f29b16;">
+  <div class="progress" aria-hidden="true"></div>
+
+  <nav class="cs-nav" aria-label="Case study">
+    <div class="inner">
+      <a class="cs-pill" href="index.html#personal-work">← Home</a>
+      <span class="cs-pill count"><span class="dot"></span>Project case study</span>
+    </div>
+  </nav>
+
+  <header class="cs-hero">
+    <div class="wrap">
+      <div class="eyebrow">AI · RAG · Vector search · Product</div>
+      <h1>Ask Dennies</h1>
+      <p class="lede">I built a miniature vector database inside a single HTML page. My stakeholders can ask it anything I know. It answers from my notes, meeting transcripts, and the docs and artifacts I made. Every answer comes with sources and a confidence score.</p>
+
+      <dl class="meta">
+        <div><dt>Role</dt><dd>Designer and builder</dd></div>
+        <div><dt>Pair programmer</dt><dd>Claude Code</dd></div>
+        <div><dt>Runs as</dt><dd>One self-contained HTML page (a Claude artifact)</dd></div>
+        <div><dt>Stack</dt><dd>model2vec · cosine + BM25 · Claude</dd></div>
+      </dl>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="big">~18K</div>
+          <div class="label">Passages from my notes, docs, meeting transcripts and project files, searchable in the browser</div>
+        </div>
+        <div class="stat">
+          <div class="big">~3 s</div>
+          <div class="label">For most answers to start, in one step, down from 10–30 s of back-and-forth tool calls</div>
+        </div>
+        <div class="stat">
+          <div class="big">20–70 ms</div>
+          <div class="label">To score every passage by meaning and by keywords</div>
+        </div>
+      </div>
+
+      <figure class="shot">
+        <img src="images/ask-dennies/01-ask-home.webp" width="1512" height="786" alt="Ask Dennies home screen. A large question box, and a glowing &quot;How does this work?&quot; tab on the right edge.">
+        <figcaption>The Ask tab: ask anything in plain words.</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <main class="cs-body">
+    <div class="wrap cs-grid">
+      <aside class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ol>
+          <li><a href="#problem">The problem</a></li>
+          <li><a href="#built">What I built</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#visuals">Data visuals</a></li>
+          <li><a href="#choices">Design choices</a></li>
+          <li><a href="#permissions">Embeddings &amp; permissions</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#built-with">Built with</a></li>
+        </ol>
+      </aside>
+
+      <article class="content">
+        <section id="problem" class="block reveal">
+          <h2><span class="num">01</span>The problem</h2>
+          <p>A PM's knowledge is spread across working notes, meeting transcripts, docs and chat threads. To get an answer, people have to find the PM. And when the PM leaves, the context leaves too.</p>
+          <p>I wanted my stakeholders to keep asking me things when I'm not in the room: how decisions were made, where things live and what's still open.</p>
+        </section>
+
+        <section id="built" class="block reveal">
+          <h2><span class="num">02</span>What I built</h2>
+          <p>Ask Dennies is a personal knowledge assistant that runs as one self-contained HTML page. Inside it is a miniature vector database of about 18,000 passages: my working-notes wiki, about 11 design docs and artifacts I wrote, a knowledge graph of my notes with about 730 linked concepts, and about 980 project files, from docs, slides, PDFs and sheets to meeting notes and transcripts. There's no server and no hosted database to run. I designed and built it myself, with Claude Code as my pair programmer.</p>
+          <ul class="list">
+            <li><strong>Ask in plain words.</strong> Ask the way you'd ask a teammate. No special syntax, and no need to know where anything lives.</li>
+            <li><strong>Answers with receipts.</strong> Every answer cites its sources and ends with a High, Medium or Low confidence score, with a percentage. Green means a source says it directly, amber means the answer is pieced together, and red means the evidence is thin.</li>
+            <li><strong>Answers data questions with a chart.</strong> Ask a data question in plain words. Claude writes the SQL and runs it read-only, and the answer shows the SQL, a results table and a chart, so anyone can check the work.</li>
+            <li><strong>Acts with your OK.</strong> It can draft a message or email, set up a meeting, file a ticket or save a doc. Each action shows up as an editable card, and nothing happens until a person clicks Approve. Messages and emails stay drafts.</li>
+            <li><strong>Stays fresh.</strong> Drop a new file in the shared folder and the page embeds it in the browser and saves it once, for everyone. No rebuild, no pipeline.</li>
+            <li><strong>Learns its gaps.</strong> Questions it can't answer go to an owner-only Backlog tab, so the owners can fill the gaps.</li>
+          </ul>
+        </section>
+
+        <section id="how" class="block reveal">
+          <h2><span class="num">03</span>How it works</h2>
+          <div class="arch">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="Inter, -apple-system, Segoe UI, sans-serif" role="img" aria-labelledby="ad-title ad-desc">
+  <title id="ad-title">Ask Dennies — architecture</title>
+  <desc id="ad-desc">Notes, docs, transcripts and artifacts are split into passages and embedded at build time into static index files inside a single HTML artifact. In the browser, a question is embedded locally and scored against every passage by meaning and keywords; the top 12 go to Claude with the question. Claude answers with citations and a confidence score, uses live tools only when needed, and proposes actions that run only after approval. New files are indexed in the browser and shared with everyone.</desc>
+  <defs>
+    <marker id="ad-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#5b6b70"/></marker>
+    <linearGradient id="ad-grad" x1="0" x2="1"><stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient>
+  </defs>
+  <rect width="1200" height="700" rx="24" fill="#f7f9f9"/>
+  <text x="40" y="58" font-size="26" font-weight="700" fill="#14201e">Ask Dennies — a miniature vector database inside one HTML file</text>
+  <text x="40" y="86" font-size="15" fill="#5b6b70">Build once on a laptop · search in the viewer's browser · Claude answers with receipts</text>
+
+  <!-- column 1: sources -->
+  <text x="40" y="132" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">1 · KNOWLEDGE</text>
+  <g font-size="14" fill="#14201e">
+    <rect x="40" y="146" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="174">My working-notes wiki</text>
+    <rect x="40" y="198" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="226">Design docs &amp; artifacts I made</text>
+    <rect x="40" y="250" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="278">Meeting notes &amp; transcripts</text>
+    <rect x="40" y="302" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="330">Docs, slides, PDFs &amp; sheets</text>
+    <rect x="40" y="354" width="250" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="58" y="382">Knowledge graph of my notes</text>
+  </g>
+
+  <!-- column 2: build -->
+  <text x="340" y="132" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">2 · BUILD (LAPTOP)</text>
+  <rect x="340" y="146" width="250" height="252" rx="14" fill="#fff" stroke="#d8e0e0"/>
+  <g font-size="14" fill="#14201e">
+    <text x="358" y="176" font-weight="700">Extract → chunk → embed</text>
+    <text x="358" y="206">• ~18,000 passages</text>
+    <text x="358" y="232">• model2vec static embeddings</text>
+    <text x="358" y="252" fill="#5b6b70" font-size="13">   256 dims, int8-quantized</text>
+    <text x="358" y="280">• Tokenizer re-written in JS</text>
+    <text x="358" y="300" fill="#5b6b70" font-size="13">   (matches the reference exactly)</text>
+    <text x="358" y="328">• Shipped as static files</text>
+    <text x="358" y="348" fill="#5b6b70" font-size="13">   inside the artifact (~12 MB)</text>
+    <text x="358" y="376">• No server, DB or API key</text>
+  </g>
+  <path d="M290 272 H334" stroke="#5b6b70" stroke-width="2" marker-end="url(#ad-arrow)"/>
+
+  <!-- column 3: browser -->
+  <text x="640" y="132" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">3 · IN THE BROWSER</text>
+  <rect x="640" y="146" width="520" height="252" rx="14" fill="#fff" stroke="url(#ad-grad)" stroke-width="2"/>
+  <g font-size="14" fill="#14201e">
+    <rect x="660" y="166" width="140" height="44" rx="10" fill="#e3f2ef"/><text x="676" y="194">Your question</text>
+    <rect x="824" y="166" width="140" height="44" rx="10" fill="#e3f2ef"/><text x="838" y="194">Embed locally</text>
+    <rect x="988" y="166" width="156" height="44" rx="10" fill="#e3f2ef"/><text x="1002" y="187" font-size="13">Hybrid search</text><text x="1002" y="203" font-size="11" fill="#5b6b70">cosine + BM25 · &lt;70 ms</text>
+    <path d="M800 188 H818" stroke="#5b6b70" stroke-width="2" marker-end="url(#ad-arrow)"/>
+    <path d="M964 188 H982" stroke="#5b6b70" stroke-width="2" marker-end="url(#ad-arrow)"/>
+    <rect x="988" y="236" width="156" height="44" rx="10" fill="#e6ecfb"/><text x="1006" y="263">Top 12 passages</text>
+    <path d="M1066 210 V230" stroke="#5b6b70" stroke-width="2" marker-end="url(#ad-arrow)"/>
+    <rect x="824" y="236" width="140" height="44" rx="10" fill="url(#ad-grad)"/><text x="868" y="263" fill="#fff" font-weight="700">Claude</text>
+    <path d="M988 258 H970" stroke="#5b6b70" stroke-width="2" marker-end="url(#ad-arrow)"/>
+    <rect x="660" y="236" width="140" height="44" rx="10" fill="#fff" stroke="#d8e0e0"/><text x="672" y="256" font-size="13">Answer + sources</text><text x="672" y="271" font-size="12" fill="#2d6a2f">+ confidence score</text>
+    <path d="M824 258 H806" stroke="#5b6b70" stroke-width="2" marker-end="url(#ad-arrow)"/>
+    <text x="660" y="316" font-size="13" fill="#5b6b70">Only if needed: live tools under the viewer's own access —</text>
+    <text x="660" y="336" font-size="13" fill="#5b6b70">cloud drive · team chat · read-only warehouse SQL</text>
+    <text x="660" y="366" font-size="13" fill="#14201e">Most answers start in ~3 s, in one step (vs. 10–30 s of tool hops)</text>
+  </g>
+
+  <!-- bottom row: trust & loop -->
+  <text x="40" y="452" font-size="12" font-weight="700" fill="#0f766e" letter-spacing="1.5">4 · TRUST, ACTION &amp; LEARNING LOOP</text>
+  <g font-size="13" fill="#14201e">
+    <rect x="40" y="466" width="270" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="58" y="496" font-weight="700" font-size="15">Agentic, with approval</text>
+    <text x="58" y="524">Drafts messages and emails, books</text>
+    <text x="58" y="544">meetings, files tickets, saves docs</text>
+    <text x="58" y="564">as editable cards. Nothing runs</text>
+    <text x="58" y="584">until a person clicks Approve.</text>
+
+    <rect x="330" y="466" width="270" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="348" y="496" font-weight="700" font-size="15">Honest by design</text>
+    <text x="348" y="524">Every answer cites its sources</text>
+    <text x="348" y="544">and ends with a High / Medium / Low</text>
+    <text x="348" y="564">confidence score. Unanswered ones</text>
+    <text x="348" y="584">land in an owner-only gap backlog.</text>
+
+    <rect x="620" y="466" width="270" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="638" y="496" font-weight="700" font-size="15">Self-updating index</text>
+    <text x="638" y="524">Drop a file in the shared folder:</text>
+    <text x="638" y="544">the page embeds it in the browser</text>
+    <text x="638" y="564">and saves it once, for everyone.</text>
+    <text x="638" y="584">No rebuild, no pipeline to run.</text>
+
+    <rect x="910" y="466" width="250" height="170" rx="14" fill="#fff" stroke="#d8e0e0"/>
+    <text x="928" y="496" font-weight="700" font-size="15">Owner insights</text>
+    <text x="928" y="524">Visit log: who visited, when,</text>
+    <text x="928" y="544">which tabs, what they asked.</text>
+    <text x="928" y="564">Disclosed to visitors; owners</text>
+    <text x="928" y="584">can delete any entry.</text>
+  </g>
+  <text x="40" y="672" font-size="12" fill="#5b6b70">Built with Claude Code as a pair-programmer. Runs entirely as a Claude artifact: one HTML page plus static index files.</text>
+</svg>
+          </div>
+          <p class="arch-note"><a href="images/ask-dennies/architecture.svg" target="_blank" rel="noopener">Open the diagram full size →</a></p>
+
+          <ol class="steps">
+            <li><span><strong>Build once.</strong> On my laptop, a build script extracts the text from every source and splits it into passages. It embeds each passage with model2vec (potion-base-8M static embeddings, 256 dimensions). The vectors are quantized to int8, with one scale value per row, and ship as static files inside the page: about 12 MB in total.</span></li>
+            <li><span><strong>Search in the browser.</strong> I rewrote the WordPiece tokenizer in plain JavaScript, and it matches the reference tokenizer exactly, so the browser embeds each question itself. The page then scores the question against all ~18,000 passages, by meaning (cosine similarity) and by keywords (BM25), in about 20–70 ms. Some sources get a ranking boost, and no single source can fill more than 3 of the top spots.</span></li>
+            <li><span><strong>Claude answers.</strong> The top 12 passages go to Claude with the question, so most answers start in about 3 seconds, in one step. Only when the index can't answer does Claude reach for live tools: searching the cloud drive or team chat, or running read-only SQL against the data warehouse. Those tools run under the viewer's own access, so nobody sees more than they already could.</span></li>
+            <li><span><strong>Act and learn.</strong> Actions arrive as cards that wait for Approve. New files join the index on their own, and unanswered questions go to the owners' backlog. An owner-only Visits tab shows who visited, when, which tabs they opened and what they asked. The page tells visitors about the log, and owners can delete any entry.</span></li>
+          </ol>
+        </section>
+
+        <section id="visuals" class="block reveal">
+          <h2><span class="num">04</span>Data visuals</h2>
+          <h3>A map of what I know</h3>
+          <p>Each dot is one real passage from the index, 17,919 in all. The layout comes from UMAP, run on the 256-dimension passage vectors, so passages that mean similar things land near each other. Color shows the source type. Pick one of the four questions to replay a search: it lights up the 12 closest passages by meaning, then carries them to Claude.</p>
+
+          <div class="map-embed" id="mapEmbed">
+            <button type="button" class="map-preview" id="mapPreview" aria-label="Load the interactive knowledge map">
+              <img src="images/ask-dennies/knowledge-map.webp" width="1600" height="1000" alt="A dark map of colored dots in clusters. Twelve dots connect with curved lines to a circle labeled Claude." loading="lazy">
+              <span class="play" aria-hidden="true">▶ Explore the live map</span>
+            </button>
+          </div>
+          <p class="map-caption">A map of what I know: 17,919 passages, laid out by meaning. <a href="Ask Dennies Knowledge Map.html" target="_blank" rel="noopener">Open it on its own page →</a></p>
+          <p>The map stores only a position and a source type for each passage. It has no text, titles, links or vectors, so hovering a dot shows its source and nothing else. The split between meeting notes and project files is approximate, based on file names.</p>
+
+          <h3>A live data answer</h3>
+          <p>Ask turns a data question in plain words into SQL, runs it read-only, and comes back with a chart, the query and a results table.</p>
+          <figure class="shot">
+            <img src="images/ask-dennies/15-conversion-chart.webp" width="1512" height="786" alt="A line chart of weekly conversion rate for three brands. The axis values and table values are blurred." loading="lazy">
+            <figcaption>Ask a data question in plain words, and the answer comes back as a chart. Values are blurred.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="images/ask-dennies/16-conversion-sql-and-table.webp" width="700" height="456" alt="An answer's notes on site IDs and weeks, the SQL query and a results table. The metric values and the table name are blurred." loading="lazy">
+            <figcaption>The same answer shows its SQL and a results table, so anyone can check the work. Values are blurred.</figcaption>
+          </figure>
+        </section>
+
+        <section id="choices" class="block reveal">
+          <h2><span class="num">05</span>Design choices</h2>
+          <div class="cards cards-2">
+            <div class="card">
+              <div class="k">Architecture</div>
+              <div class="v">In the browser, not on a server</div>
+              <p>There's nothing to host, maintain or pay for. The index ships with the page.</p>
+            </div>
+            <div class="card">
+              <div class="k">Model</div>
+              <div class="v">Small static embeddings</div>
+              <p>model2vec is tiny and runs in JavaScript with no GPU. It's fast enough to score every passage for every question. Keyword search covers its weak spots.</p>
+            </div>
+            <div class="card">
+              <div class="k">Retrieval</div>
+              <div class="v">Hybrid scoring</div>
+              <p>Meaning handles fuzzy questions. Keywords catch the exact names, IDs and table names that embeddings miss.</p>
+            </div>
+            <div class="card">
+              <div class="k">Speed</div>
+              <div class="v">Pre-fetch, not tool hops</div>
+              <p>One step replaces a 10–30 s chain of searches.</p>
+            </div>
+            <div class="card">
+              <div class="k">Trust</div>
+              <div class="v">Honesty over coverage</div>
+              <p>Confidence scores and a gap backlog replace confident guessing.</p>
+            </div>
+            <div class="card">
+              <div class="k">Action</div>
+              <div class="v">Agentic, but human-approved</div>
+              <p>It does the busywork. It never sends anything on its own.</p>
+            </div>
+            <div class="card wide">
+              <div class="k">Onboarding</div>
+              <div class="v">Discoverable</div>
+              <p>A glowing "How does this work?" tab opens a 7-step animated tour that explains the system to non-technical stakeholders.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="permissions" class="block reveal">
+          <h2><span class="num">06</span>Embeddings &amp; permissions</h2>
+          <p>Keeping the index inside the page was deliberate, and it has a clear boundary. It's the right design for one person's knowledge, read by a known group. It's the wrong design wherever different people should see different things, because a page can't tell who is allowed to see what.</p>
+
+          <h3>Embeddings, in plain words</h3>
+          <ul class="list">
+            <li><strong>Embed.</strong> A small model turns a piece of text into 256 numbers. Think of them as coordinates on a map of meaning. Texts that mean similar things land close together, even with different words: "failed payments" sits near "declines."</li>
+            <li><strong>Build.</strong> Split every doc into passages of about 800 characters, turn each one into coordinates, and store the coordinates with the text. That stored set is the index.</li>
+            <li><strong>Ask.</strong> Turn the question into coordinates the same way, measure how close it is to every passage, and keep the closest 12.</li>
+            <li><strong>Answer.</strong> Send those 12 passages and the question to Claude, which writes the answer from them. That pattern is RAG: retrieval-augmented generation.</li>
+          </ul>
+          <p>A vector database is that index plus the plumbing around it: fast search across millions of vectors, filters, updates, and a server that controls who can search what. At ~18,000 passages I don't need the fast-search part. Checking every passage takes about 50 ms in a browser, which is why the whole thing fits in the page. And because embeddings are fuzzy about exact names like table names and IDs, the page blends in keyword search.</p>
+          <p>The search index lives inside the page: no vector database to host and no API key. Search runs in your browser, and Claude sees only the top passages.</p>
+
+          <h3>Where an in-page index works, and where it breaks</h3>
+          <div class="cards cards-2">
+            <div class="card">
+              <div class="k">Strength</div>
+              <div class="v">Nothing to run</div>
+              <p>Nothing to host, pay for or maintain.</p>
+            </div>
+            <div class="card">
+              <div class="k">Strength</div>
+              <div class="v">Fast and local</div>
+              <p>Search runs on the viewer's own computer, and the index ships with the page, so it can't break on its own.</p>
+            </div>
+            <div class="card">
+              <div class="k">Limit</div>
+              <div class="v">No access control</div>
+              <p>Every viewer gets the same index. This is the big one, and the next part covers it.</p>
+            </div>
+            <div class="card">
+              <div class="k">Limit</div>
+              <div class="v">Everything is downloadable</div>
+              <p>The page ships the passage text, not only the numbers. Anyone who can open it can read every passage, not just the 12 an answer uses. Even the numbers alone can be partly turned back into words.</p>
+            </div>
+            <div class="card">
+              <div class="k">Limit</div>
+              <div class="v">Size</div>
+              <p>Comfortable up to tens of thousands of passages. At hundreds of thousands, the download and memory use get heavy.</p>
+            </div>
+            <div class="card">
+              <div class="k">Limit</div>
+              <div class="v">Deletes and quality</div>
+              <p>Removing a file doesn't remove its passages from the built-in index until a rebuild. And the small model is weaker than big embedding models; keyword search covers much of the gap.</p>
+            </div>
+          </div>
+
+          <h3>Who can see what</h3>
+          <p>Embeddings know nothing about permissions. A vector is just numbers, and nothing in it says who may see it. Permissions have to be enforced by something the viewer can't get around, which means a server that knows who they are. So Ask Dennies splits the work in two:</p>
+          <ul class="list">
+            <li><strong>The built-in index is the same for every viewer.</strong> So the rule is simple: only put in what everyone who can open the page may see.</li>
+            <li><strong>Live tools use the viewer's own sign-in.</strong> The cloud drive, team chat and data warehouse check permissions themselves, so someone outside a chat channel can't reach it through Ask.</li>
+            <li><strong>The self-updating index follows the same rule.</strong> New files in the shared folder are saved once, for every viewer, so that folder is treated as open to everyone the page is shared with.</li>
+          </ul>
+          <p>And the model is never the gatekeeper. A prompt that says "don't show X to Y" isn't security. Filtering has to happen before anything reaches the model.</p>
+
+          <h3>How I'd build it for mixed permissions</h3>
+          <ol class="steps">
+            <li><span><strong>Copy the permissions with the content.</strong> When indexing a doc, also store who can see it. For chat, store who is in each channel.</span></li>
+            <li><span><strong>Know the user.</strong> People sign in, and a server looks up which groups they're in.</span></li>
+            <li><span><strong>Filter before ranking.</strong> Search only the passages that person may see, on the server, never in the browser.</span></li>
+            <li><span><strong>Keep permissions in sync.</strong> Sharing changes and people leave channels. Outdated permissions are a leak, and this is the hardest part.</span></li>
+            <li><span><strong>Or don't copy at all.</strong> Search each source live with the person's own sign-in, the way Ask's live tools do. Permissions are always right, but it's slower and only as good as each tool's own search.</span></li>
+          </ol>
+          <p style="margin-top:22px">Most real systems mix the two: a shared index for what everyone may see, and live lookups for the rest. That's the shape of Ask Dennies, too: an in-page index for content the whole audience can see, and live tools for anything with permissions.</p>
+        </section>
+
+        <section id="gallery" class="block reveal">
+          <h2><span class="num">07</span>Gallery</h2>
+          <p>Tap any screenshot to see it full size.</p>
+          <div class="gallery">
+            <figure class="shot">
+              <img src="images/ask-dennies/02-tour-1-ask-in-plain-words.webp" width="1512" height="786" alt="Step 1 of the animated tour. A question is being typed." loading="lazy">
+              <figcaption>Tour 1/7: ask the way you'd ask a teammate.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/03-tour-2-hybrid-vector-search.webp" width="1512" height="786" alt="Step 2 of the tour. A grid of passages, with a few lit up as matches." loading="lazy">
+              <figcaption>Tour 2/7: every passage is scored by meaning and by keywords, in milliseconds.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/04-tour-3-prefetch-top-12.webp" width="1512" height="786" alt="Step 3 of the tour. Passage cards fly into a circle labeled Claude." loading="lazy">
+              <figcaption>Tour 3/7: the best 12 passages go to Claude up front, so most answers take one step.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/05-tour-4-tools-when-needed.webp" width="1512" height="786" alt="Step 4 of the tour. Live search tools, used only when needed." loading="lazy">
+              <figcaption>Tour 4/7: live tools only when the index isn't enough, under the viewer's own access.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/06-tour-5-answers-with-receipts.webp" width="1512" height="786" alt="Step 5 of the tour. An answer card with source chips and a 90% High confidence ring." loading="lazy">
+              <figcaption>Tour 5/7: every answer cites sources and ends with a confidence score.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/07-tour-6-actions-with-approval.webp" width="1512" height="786" alt="Step 6 of the tour. A draft message card with an Approve button." loading="lazy">
+              <figcaption>Tour 6/7: it drafts the busywork. Nothing happens until you click Approve.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/08-tour-7-self-updating-index.webp" width="1512" height="786" alt="Step 7 of the tour. A new file flows into the search index. A note says unanswered questions go to the owners' backlog." loading="lazy">
+              <figcaption>Tour 7/7: new files join the index on their own. Unanswered questions go to a backlog.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/09-answer-with-search-trace.webp" width="1512" height="786" alt="An answer in progress. A search trace lists the passages it found." loading="lazy">
+              <figcaption>A live answer, with a trace of the passages it searched.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/10-answer-confidence-badge.webp" width="1512" height="786" alt="A finished answer about the assistant's tools and guardrails. It ends in a &quot;High confidence · 95%&quot; badge." loading="lazy">
+              <figcaption>It explains its own design and scores its own confidence.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/11-approval-card.webp" width="1512" height="786" alt="An action card with editable fields and an Approve button." loading="lazy">
+              <figcaption>Actions arrive as editable cards that wait for approval.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/13-owner-visits-log.webp" width="1512" height="786" alt="An owner-only Visits tab. It lists recent visits and the questions asked." loading="lazy">
+              <figcaption>Owner-only visit log: who came, which tabs they opened, what they asked.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/14-owner-unanswered-backlog.webp" width="1512" height="786" alt="An owner-only &quot;Unanswered questions&quot; tab with Open, Resolved and All filters." loading="lazy">
+              <figcaption>Owner-only backlog of questions it couldn't answer, so the gaps get filled.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/ask-dennies/12-easter-egg-party-mode.webp" width="1512" height="786" alt="The page in party mode, with confetti, emoji and light beams." loading="lazy">
+              <figcaption>Ask "How cool was Dennies?" Answer: the absolute coolest.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="built-with" class="block reveal">
+          <h2><span class="num">08</span>Built with</h2>
+          <ul class="tech">
+            <li>HTML, CSS and JavaScript</li>
+            <li>model2vec (potion-base-8M)</li>
+            <li>WordPiece tokenizer in JavaScript</li>
+            <li>Cosine + BM25 hybrid retrieval</li>
+            <li>int8 vector quantization</li>
+            <li>UMAP (for the knowledge map)</li>
+            <li>Claude (Claude artifacts, with tool use)</li>
+            <li>Python and Node build scripts</li>
+            <li>Claude Code</li>
+          </ul>
+          <p>I designed and built it myself, with Claude Code as my pair programmer: I made the product and design calls, and we wrote the code together.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="cs-foot">
+    <div class="wrap">
+      <a class="next" href="Purchase Monitor.html">
+        <div>
+          <div class="k">Next case study</div>
+          <div class="t">Purchase Monitor</div>
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <div class="foot-links">
+        <a href="index.html#personal-work">← Back to all work</a>
+        <span>Dennies Chung</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Swap the static knowledge-map preview for the live, interactive map.
+    (function () {
+      const btn = document.getElementById('mapPreview');
+      const box = document.getElementById('mapEmbed');
+      if (!btn || !box) return;
+      btn.addEventListener('click', () => {
+        const frame = document.createElement('iframe');
+        frame.src = 'Ask Dennies Knowledge Map.html';
+        frame.title = 'A map of what I know';
+        frame.loading = 'lazy';
+        // Fit the frame to the map's own height (same origin), so nothing scrolls inside it.
+        const fit = () => {
+          try {
+            const h = frame.contentDocument.documentElement.scrollHeight;
+            if (h) frame.style.height = h + 'px';
+          } catch (e) { /* keep the 900px default */ }
+        };
+        frame.addEventListener('load', () => {
+          fit();
+          setTimeout(fit, 300);
+          let t;
+          window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(fit, 250); });
+        });
+        box.replaceChildren(frame);
+        frame.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
