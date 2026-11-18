@@ -21,6 +21,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="case-study.css" rel="stylesheet" />
   <script src="case-study.js" defer></script>
+  <style>
+    /* Two phone screenshots side by side at the same height */
+    .phones{ align-items: end; }
+    .phones .shot img{ max-height: 620px; width: auto; }
+  </style>
 </head>
 
 <body style="--tile:#f4c37a; --strong:#c98a1f; --next-tile:#f29b16;">
@@ -82,6 +87,16 @@
           <h2><span class="num">01</span>The question</h2>
           <p>Did launching Apple Pay as an express option — on product pages and at the top of checkout — create net-new orders, or just shift shoppers who would have paid by card anyway?</p>
           <p>Apple Pay wasn't new; it had been an available tender for some time. What changed in October was <strong>placement</strong>. North America got mobile web product pages first, with checkout following two weeks later. Europe and the UK launched both together, after a payments routing migration that had a brief rollback.</p>
+          <div class="shot-pair phones">
+            <figure class="shot">
+              <img src="images/apple-pay/pdp-express-apple-pay.webp" width="295" height="911" alt="A mobile product page for a sweater. Right under the main add-to-bag button is an Apple Pay button." loading="lazy">
+              <figcaption>On the product page: Apple Pay right under the main button.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="images/apple-pay/checkout-express-apple-pay.webp" width="1206" height="2043" alt="Mobile checkout. An Express Checkout box with an Apple Pay button sits above Sign In and Contact Information." loading="lazy">
+              <figcaption>At the top of checkout: express Apple Pay before sign-in or any form.</figcaption>
+            </figure>
+          </div>
         </section>
 
         <section id="harder" class="block reveal">
