@@ -142,7 +142,7 @@ function frame(now){
   if (q && phase==='lit'){
     q.idx.forEach((i,n)=>{
       const k = D.pts[i][2], c = COLORS[k], d = reduce ? 1 : ease((now-t0-n*70)/650);
-      if (d<=0) return;
+      if (!on[k] || d<=0) return;           // hidden sources stay hidden in the replay too
       const mx = (X[i]+claude.x)/2, my = Math.min(Y[i],claude.y) - 60*dpr;
       ctx.strokeStyle = c; ctx.globalAlpha = .55; ctx.lineWidth = 1.3*dpr; ctx.beginPath();
       const steps = 24, upto = Math.round(steps*d);
