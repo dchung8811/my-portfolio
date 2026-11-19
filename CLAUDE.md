@@ -59,19 +59,26 @@ data are tracked.
 
 ### What the graph does not know about this project
 
-Measured on this repo, not assumed: the graph holds exactly one node,
-`case-study.js`, with zero edges. `--code-only` classifies all 13 tracked `.html`
-files as documents, and `case-study.js` declares no top-level named functions, so
-`graphify query`, `affected`, `path`, `explain` and `god-nodes` all come back empty.
-Read the source directly for any of the following.
+Measured on this repo, not assumed: the graph holds 29 nodes and 47 edges across
+the `js/` modules the home page loads, so `query`, `affected`, `path`, `explain`
+and `god-nodes` give real answers about home-page behavior. Everything else on the
+site is still invisible to it, because `--code-only` classifies all 13 tracked
+`.html` files as documents. Read the source directly for any of the following.
 
-- **Page behavior is inline `<script>`, which is never indexed.** `index.html` holds
-  ~19KB of it: `typeHero` and `buildHeroTokens` for the hero, the `[data-shelf]`
-  books carousel (`page`, `keepInMiddle`, `endDrag`), the `#menuOverlay` nav, the
-  `#more-projects` drawer, and the `.reveal` IntersectionObserver.
-  `Ask Dennies Knowledge Map.html` holds ~223KB — the entire knowledge-map viewer.
-  The calculators in `Dog Food Calculator.html` and
-  `Dog Food Calculator Multiple Foods.html` are inline too.
+- **Inline `<script>` is never indexed, and three pages are still all inline.**
+  `Ask Dennies Knowledge Map.html` holds ~223KB — the entire knowledge-map viewer —
+  and the calculators in `Dog Food Calculator.html` and
+  `Dog Food Calculator Multiple Foods.html` are inline too. The home page is the
+  exception: its script now lives in `js/` (`main.js` starts `hero.js`, `nav.js`,
+  `scroll-chrome.js`, `reveal.js` → `count-up.js`, `personal-work-wash.js`,
+  `more-projects.js`, `books-shelf.js`), which is why the graph has anything in it.
+- **The graph still cannot see which page loads a module.** `index.html` reaches
+  `js/main.js` through a `<script type="module" src>` tag, and the modules reach the
+  page through `getElementById` / `querySelector` on ids and classes defined in
+  `index.html` and its inline `<style>` (`#typedHero`, `#heroTemplate`,
+  `#menuOverlay`, `#introStack`, `#sectionPill`, `#more-projects`, `[data-shelf]`,
+  `.reveal`, `.bio`, `.top-controls`). Those are the edges that break a page, and
+  none of them are in the graph.
 - **`case-study.js` has no recorded reach.** Nine pages load it via `<script src>`,
   a tag the extractor never read, and it drives them through DOM contracts shared
   with `case-study.css`: `.progress`, `.cs-nav`, `.cs-hero`, `.toc a`, `.reveal`,
